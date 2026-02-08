@@ -91,5 +91,13 @@ export {
 // Re-export generated types for convenience
 export type * from './generated/types.gen';
 
+// Outbox - transactional outbox pattern
+export { OutboxManager, OutboxStatus } from './outbox/index.js';
+export type { OutboxDriver, OutboxMessage, OutboxStatusCode, MessageType } from './outbox/index.js';
+export { CreateEventDto } from './outbox/index.js';
+export { CreateDispatchJobDto } from './outbox/index.js';
+export { CreateAuditLogDto } from './outbox/index.js';
+export { generateTsid, isValidTsid } from './outbox/index.js';
+
 // Re-export neverthrow utilities for convenience
 export { ok, err, Result, ResultAsync } from 'neverthrow';
