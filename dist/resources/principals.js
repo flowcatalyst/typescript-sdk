@@ -80,6 +80,10 @@ export class PrincipalsResource {
     }
     /**
      * Reset a user's password.
+     *
+     * Set `enforcePasswordComplexity` on `data` to `false` when the caller
+     * enforces its own password policy; only the platform's 2-character
+     * minimum will apply. Defaults to `true`.
      */
     resetPassword(id, data) {
         return this.client.request((httpClient, headers) => sdk.postApiAdminPrincipalsByIdResetPassword({
