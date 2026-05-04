@@ -20,6 +20,7 @@ import { PrincipalsResource } from "./resources/principals";
 import { MeResource } from "./resources/me";
 import { ConnectionsResource } from "./resources/connections";
 import { DefinitionSynchronizer } from "./sync/definition-synchronizer";
+import { RouterResource } from "./resources/router";
 function isUserTokenConfig(config) {
     return "accessToken" in config;
 }
@@ -51,6 +52,7 @@ export class FlowCatalystClient {
             retryAttempts: config.retryAttempts ?? 3,
             retryDelay: config.retryDelay ?? 100,
             baseUrl: config.baseUrl.replace(/\/$/, ""),
+            routerBaseUrl: (config.routerBaseUrl ?? config.baseUrl).replace(/\/$/, ""),
         };
         if (isUserTokenConfig(config)) {
             // User token mode - use provided token or token provider
@@ -119,6 +121,19 @@ export class FlowCatalystClient {
     /** Connections resource */
     connections() {
         return (this._connections ?? (this._connections = new ConnectionsResource(this)));
+    }
+    /**
+     * Message router monitoring resource. Provides presence checks
+     * against the router's in-pipeline map (single id and batch).
+     * Talks to `routerBaseUrl` if configured, otherwise falls back to
+     * `baseUrl`.
+     */
+    router() {
+        return (this._router ?? (this._router = new RouterResource(this)));
+    }
+    /** Base URL of the message router (used by `router()`). */
+    getRouterBaseUrl() {
+        return this.config.routerBaseUrl;
     }
     /**
      * Definition synchronizer — bulk-sync roles, event types, subscriptions,

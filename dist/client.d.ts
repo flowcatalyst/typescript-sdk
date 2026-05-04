@@ -19,6 +19,7 @@ import { PrincipalsResource } from "./resources/principals";
 import { MeResource } from "./resources/me";
 import { ConnectionsResource } from "./resources/connections";
 import { DefinitionSynchronizer } from "./sync/definition-synchronizer";
+import { RouterResource } from "./resources/router";
 /**
  * Configuration for client credentials authentication.
  */
@@ -29,6 +30,14 @@ export interface ClientCredentialsConfig extends TokenManagerConfig {
     retryAttempts?: number;
     /** Base delay between retries in ms (default: 100) */
     retryDelay?: number;
+    /**
+     * Base URL of the message router for monitoring endpoints
+     * (`/monitoring/in-flight-messages/...`). The router runs at a
+     * different host than the platform; if not set, router calls fall
+     * back to `baseUrl` (correct only when router and platform share a
+     * host, e.g. `fc-dev`).
+     */
+    routerBaseUrl?: string;
 }
 /**
  * Configuration for user token authentication.
@@ -48,6 +57,11 @@ export interface UserTokenConfig {
     retryAttempts?: number;
     /** Base delay between retries in ms (default: 100) */
     retryDelay?: number;
+    /**
+     * Base URL of the message router for monitoring endpoints. See
+     * `ClientCredentialsConfig.routerBaseUrl`.
+     */
+    routerBaseUrl?: string;
 }
 export type FlowCatalystConfig = ClientCredentialsConfig | UserTokenConfig;
 /**
@@ -87,6 +101,7 @@ export declare class FlowCatalystClient {
     private _me?;
     private _connections?;
     private _definitions?;
+    private _router?;
     constructor(config: FlowCatalystConfig);
     /** Event Types resource */
     eventTypes(): EventTypesResource;
@@ -108,6 +123,15 @@ export declare class FlowCatalystClient {
     me(): MeResource;
     /** Connections resource */
     connections(): ConnectionsResource;
+    /**
+     * Message router monitoring resource. Provides presence checks
+     * against the router's in-pipeline map (single id and batch).
+     * Talks to `routerBaseUrl` if configured, otherwise falls back to
+     * `baseUrl`.
+     */
+    router(): RouterResource;
+    /** Base URL of the message router (used by `router()`). */
+    getRouterBaseUrl(): string;
     /**
      * Definition synchronizer — bulk-sync roles, event types, subscriptions,
      * dispatch pools, and principals per application.
