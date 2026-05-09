@@ -1,0 +1,5531 @@
+export type ClientOptions = {
+    baseUrl: `${string}://${string}` | (string & {});
+};
+/**
+ * Add note request (matches Java AddNoteRequest)
+ */
+export type AddNoteRequest = {
+    /**
+     * Category of the note
+     */
+    category: string;
+    /**
+     * Note content
+     */
+    text: string;
+};
+/**
+ * Add note response
+ */
+export type AddNoteResponse = {
+    message: string;
+};
+/**
+ * Add schema version request
+ */
+export type AddSchemaVersionRequest = {
+    /**
+     * JSON schema for this version
+     */
+    schema: unknown;
+};
+/**
+ * Aggregates list response
+ */
+export type AggregatesResponse = {
+    aggregates: Array<FilterOption>;
+};
+/**
+ * All filter options combined
+ */
+export type AllFilterOptions = {
+    applications: Array<FilterOption>;
+    clients: Array<FilterOption>;
+    dispatchPools: Array<FilterOption>;
+    eventTypes: Array<FilterOption>;
+    subscriptions: Array<FilterOption>;
+};
+/**
+ * Application access list response
+ */
+export type ApplicationAccessListResponse = {
+    applications: Array<ApplicationAccessResponse>;
+    total: number;
+};
+/**
+ * Application access response
+ */
+export type ApplicationAccessResponse = {
+    applicationCode: string;
+    applicationId: string;
+    applicationName: string;
+};
+/**
+ * Application IDs response
+ */
+export type ApplicationIdsResponse = {
+    applicationIds: Array<string>;
+};
+/**
+ * Application option for filter dropdown
+ */
+export type ApplicationOption = {
+    code: string;
+    id: string;
+    name: string;
+};
+/**
+ * Application options response
+ */
+export type ApplicationOptionsResponse = {
+    options: Array<ApplicationOption>;
+};
+/**
+ * Applications list response
+ */
+export type ApplicationsResponse = {
+    applications: Array<FilterOption>;
+};
+/**
+ * Assign role request
+ */
+export type AssignRoleRequest = {
+    /**
+     * Client ID (optional, for client-scoped roles)
+     */
+    clientId?: string | null;
+    /**
+     * Role code
+     */
+    role: string;
+};
+/**
+ * Audit log detail response (includes operation JSON)
+ */
+export type AuditLogDetailResponse = {
+    applicationId?: string | null;
+    clientId?: string | null;
+    entityId?: string | null;
+    entityType: string;
+    id: string;
+    operation: string;
+    operationJson?: string | null;
+    performedAt: string;
+    principalId?: string | null;
+    principalName?: string | null;
+};
+/**
+ * Cursor-paginated audit logs response. `aud_logs` grows unbounded, so we
+ * keyset-paginate on `(performed_at, id) DESC` and never count.
+ */
+export type AuditLogListResponse = {
+    auditLogs: Array<AuditLogResponse>;
+    hasMore: boolean;
+    nextCursor?: string | null;
+};
+/**
+ * Audit log response DTO (matches Java AuditLogDto)
+ */
+export type AuditLogResponse = {
+    applicationId?: string | null;
+    clientId?: string | null;
+    entityId?: string | null;
+    entityType: string;
+    id: string;
+    operation: string;
+    performedAt: string;
+    principalId?: string | null;
+    principalName?: string | null;
+};
+/**
+ * Authentication method
+ */
+export type AuthMethod = 'INTERNAL' | 'OIDC' | 'SAML';
+export type AuthenticateBeginRequest = {
+    email: string;
+};
+/**
+ * WebAuthn authentication challenge to hand to `navigator.credentials.get()`.
+ * The shape is identical for known and unknown emails — see the enumeration
+ * defence note in the source.
+ */
+export type AuthenticateBeginResponse = {
+    options: {
+        [key: string]: unknown;
+    };
+    stateId: string;
+};
+export type AuthenticateCompleteRequest = {
+    /**
+     * The `PublicKeyCredential` returned by `navigator.credentials.get()`.
+     */
+    credential: {
+        [key: string]: unknown;
+    };
+    stateId: string;
+};
+export type AuthenticateCompleteResponse = {
+    email?: string | null;
+    name: string;
+    principalId: string;
+    roles: Array<string>;
+};
+/**
+ * Available application response (slim DTO)
+ */
+export type AvailableApplicationResponse = {
+    active: boolean;
+    code: string;
+    description?: string | null;
+    id: string;
+    name: string;
+    type: string;
+};
+/**
+ * Available applications list response
+ */
+export type AvailableApplicationsResponse = {
+    applications: Array<AvailableApplicationResponse>;
+    total: number;
+};
+/**
+ * Batch assign roles request (for PUT /roles - declarative update)
+ */
+export type BatchAssignRolesRequest = {
+    /**
+     * List of role codes to assign (replaces existing roles)
+     */
+    roles: Array<string>;
+};
+/**
+ * Batch assign roles response (matches Java RolesAssignedResponse)
+ */
+export type BatchAssignRolesResponse = {
+    /**
+     * Roles that were added
+     */
+    added: Array<string>;
+    /**
+     * Roles that were removed
+     */
+    removed: Array<string>;
+    /**
+     * Current role assignments after update
+     */
+    roles: Array<RoleAssignmentDto>;
+};
+/**
+ * Batch create dispatch jobs request
+ */
+export type BatchCreateDispatchJobsRequest = {
+    jobs: Array<CreateDispatchJobRequest>;
+};
+/**
+ * Batch create dispatch jobs response
+ */
+export type BatchCreateDispatchJobsResponse = {
+    count: number;
+    jobs: Array<DispatchJobResponse>;
+};
+/**
+ * Batch create events request
+ */
+export type BatchCreateEventsRequest = {
+    events: Array<CreateEventRequest>;
+};
+/**
+ * Batch create response (matches Java BatchEventResponse)
+ */
+export type BatchCreateResponse = {
+    /**
+     * Total number of events in response
+     */
+    count: number;
+    /**
+     * Number of dispatch jobs created for matching subscriptions
+     */
+    dispatchJobCount: number;
+    /**
+     * Number of events that were deduplicated (already existed)
+     */
+    duplicateCount: number;
+    /**
+     * All created events (new and deduplicated)
+     */
+    events: Array<EventResponse>;
+};
+/**
+ * Check email domain response (matches Java EmailDomainCheckResponse)
+ */
+export type CheckEmailDomainResponse = {
+    /**
+     * Auth provider if configured (INTERNAL, OIDC)
+     */
+    authProvider?: string | null;
+    /**
+     * The domain that was checked
+     */
+    domain: string;
+    /**
+     * Whether the email already exists
+     */
+    emailExists: boolean;
+    /**
+     * Whether this domain has auth configuration
+     */
+    hasAuthConfig: boolean;
+    /**
+     * Informational message
+     */
+    info?: string | null;
+    /**
+     * Whether this is an anchor domain
+     */
+    isAnchorDomain: boolean;
+    /**
+     * Warning message
+     */
+    warning?: string | null;
+};
+/**
+ * Circuit breaker state
+ */
+export type CircuitBreakerState = {
+    /**
+     * Failure count
+     */
+    failureCount: number;
+    /**
+     * Last failure time
+     */
+    lastFailure?: string | null;
+    /**
+     * Time until reset (if open)
+     */
+    resetAt?: string | null;
+    /**
+     * Current state (CLOSED, OPEN, HALF_OPEN)
+     */
+    state: string;
+    /**
+     * Success count since last failure
+     */
+    successCount: number;
+    /**
+     * Target identifier
+     */
+    target: string;
+};
+/**
+ * Circuit breakers response
+ */
+export type CircuitBreakersResponse = {
+    breakers: Array<CircuitBreakerState>;
+    totalClosed: number;
+    totalHalfOpen: number;
+    totalOpen: number;
+};
+/**
+ * Client access grant response (matches Java ClientAccessGrantDto)
+ */
+export type ClientAccessGrantResponse = {
+    clientId: string;
+    expiresAt?: string | null;
+    grantedAt: string;
+    id: string;
+};
+/**
+ * Client access list response
+ */
+export type ClientAccessListResponse = {
+    grants: Array<ClientAccessGrantResponse>;
+};
+/**
+ * Client application config response (matches Java ClientApplicationDto)
+ */
+export type ClientApplicationResponse = {
+    /**
+     * Whether the application itself is active globally
+     */
+    active: boolean;
+    /**
+     * Application code
+     */
+    code: string;
+    /**
+     * Application description
+     */
+    description?: string | null;
+    /**
+     * Whether this application is enabled for this specific client
+     */
+    enabledForClient: boolean;
+    /**
+     * Application icon URL
+     */
+    iconUrl?: string | null;
+    /**
+     * Application ID
+     */
+    id: string;
+    /**
+     * Application display name
+     */
+    name: string;
+};
+/**
+ * Client applications list response
+ */
+export type ClientApplicationsResponse = {
+    applications: Array<ClientApplicationResponse>;
+    total: number;
+};
+/**
+ * Client filter options response
+ */
+export type ClientFilterOptions = {
+    clients: Array<FilterOption>;
+};
+/**
+ * Client IDs response
+ */
+export type ClientIdsResponse = {
+    clientIds: Array<string>;
+};
+/**
+ * Client list response (matches Java ClientListResponse)
+ */
+export type ClientListResponse = {
+    clients: Array<ClientResponse>;
+    total: number;
+};
+/**
+ * Client response DTO (matches Java ClientDto)
+ */
+export type ClientResponse = {
+    createdAt: string;
+    id: string;
+    identifier: string;
+    name: string;
+    status: string;
+    statusChangedAt?: string | null;
+    statusReason?: string | null;
+    updatedAt: string;
+};
+/**
+ * Cluster member info
+ */
+export type ClusterMember = {
+    healthy: boolean;
+    instanceId: string;
+    lastSeen: string;
+    role: string;
+};
+export type CompletionStatusDto = 'SUCCESS' | 'FAILURE';
+/**
+ * Config entry response (matches Java ConfigEntry)
+ */
+export type ConfigEntryResponse = {
+    key: string;
+    value: string;
+};
+/**
+ * Context data for event filtering/searching
+ */
+export type ContextDataDto = {
+    key: string;
+    value: string;
+};
+/**
+ * Create client request
+ */
+export type CreateClientRequest = {
+    /**
+     * Unique identifier/slug (URL-safe)
+     */
+    identifier: string;
+    /**
+     * Human-readable name
+     */
+    name: string;
+};
+/**
+ * Request to create a new dispatch job
+ */
+export type CreateDispatchJobRequest = {
+    /**
+     * Client ID
+     */
+    clientId?: string | null;
+    /**
+     * The event type or task code
+     */
+    code: string;
+    /**
+     * Correlation ID for distributed tracing
+     */
+    correlationId?: string | null;
+    /**
+     * If true, send raw payload only
+     */
+    dataOnly?: boolean;
+    /**
+     * Rate limiting pool ID
+     */
+    dispatchPoolId?: string | null;
+    /**
+     * Source event ID (required for EVENT kind)
+     */
+    eventId?: string | null;
+    /**
+     * External reference ID
+     */
+    externalId?: string | null;
+    /**
+     * Idempotency key for deduplication
+     */
+    idempotencyKey?: string | null;
+    /**
+     * The kind of dispatch job (EVENT or TASK)
+     */
+    kind?: string | null;
+    /**
+     * Maximum retry attempts
+     */
+    maxRetries?: number | null;
+    /**
+     * Message group for FIFO ordering
+     */
+    messageGroup?: string | null;
+    /**
+     * Custom metadata
+     */
+    metadata?: {
+        [key: string]: string;
+    };
+    /**
+     * Dispatch mode for ordering
+     */
+    mode?: string | null;
+    /**
+     * Payload to deliver (JSON string)
+     */
+    payload: string;
+    /**
+     * Content type of payload
+     */
+    payloadContentType?: string | null;
+    /**
+     * Retry strategy
+     */
+    retryStrategy?: string | null;
+    /**
+     * Sequence number within message group
+     */
+    sequence?: number | null;
+    /**
+     * Service account for authentication
+     */
+    serviceAccountId: string;
+    /**
+     * Source system/application
+     */
+    source?: string | null;
+    /**
+     * CloudEvents-style subject/aggregate reference
+     */
+    subject?: string | null;
+    /**
+     * Subscription ID that created this job
+     */
+    subscriptionId?: string | null;
+    /**
+     * Target URL for webhook delivery
+     */
+    targetUrl: string;
+    /**
+     * Timeout in seconds for HTTP call
+     */
+    timeoutSeconds?: number | null;
+};
+/**
+ * Create event request
+ */
+export type CreateEventRequest = {
+    /**
+     * Causation ID - the event that caused this event
+     */
+    causationId?: string | null;
+    /**
+     * Client ID (optional, defaults to caller's client)
+     */
+    clientId?: string | null;
+    /**
+     * Context data for filtering/searching
+     */
+    contextData?: Array<ContextDataDto>;
+    /**
+     * Correlation ID for request tracing
+     */
+    correlationId?: string | null;
+    /**
+     * Event payload data
+     */
+    data: unknown;
+    /**
+     * Deduplication ID for exactly-once delivery
+     */
+    deduplicationId?: string | null;
+    /**
+     * Event type code (e.g., "orders:fulfillment:shipment:shipped")
+     */
+    eventType: string;
+    /**
+     * Message group for FIFO ordering
+     */
+    messageGroup?: string | null;
+    /**
+     * Event source URI
+     */
+    source: string;
+    /**
+     * Event subject (optional context)
+     */
+    subject?: string | null;
+};
+/**
+ * Create event response - includes deduplication info and dispatch job count
+ */
+export type CreateEventResponse = {
+    /**
+     * Number of dispatch jobs created for matching subscriptions
+     */
+    dispatchJobCount: number;
+    event: EventResponse;
+    /**
+     * True if this was a deduplicated request (event already existed)
+     */
+    isDuplicate: boolean;
+};
+/**
+ * Create event type request
+ */
+export type CreateEventTypeRequest = {
+    /**
+     * Client ID (optional, null = anchor-level)
+     */
+    clientId?: string | null;
+    /**
+     * Event type code (e.g., "orders:fulfillment:shipment:shipped")
+     * Format: {application}:{subdomain}:{aggregate}:{event}
+     */
+    code: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Human-readable name
+     */
+    name: string;
+    /**
+     * Initial JSON schema
+     */
+    schema?: unknown;
+};
+/**
+ * Create OAuth client request
+ */
+export type CreateOAuthClientRequest = {
+    /**
+     * Application IDs this client can access
+     */
+    applicationIds?: Array<string>;
+    /**
+     * OAuth client_id (public identifier). Auto-generated if not provided.
+     */
+    clientId?: string | null;
+    /**
+     * Human-readable name
+     */
+    clientName: string;
+    /**
+     * Client type (PUBLIC or CONFIDENTIAL)
+     */
+    clientType?: string | null;
+    /**
+     * Allowed grant types
+     */
+    grantTypes?: Array<string>;
+    /**
+     * Whether PKCE is required
+     */
+    pkceRequired?: boolean | null;
+    /**
+     * Allowed redirect URIs
+     */
+    redirectUris?: Array<string>;
+};
+/**
+ * Wrapper response from `POST /api/oauth-clients`. Includes the freshly
+ * generated `client_secret` exactly once for confidential clients — it is
+ * never retrievable afterwards.
+ */
+export type CreateOAuthClientResponse = {
+    client: OAuthClientResponse;
+    /**
+     * Plaintext client secret. Only present on creation of CONFIDENTIAL
+     * clients. Capture this on the first response — the platform stores
+     * only the encrypted form and cannot return it again.
+     */
+    clientSecret?: string | null;
+};
+/**
+ * Create role request
+ */
+export type CreateRoleRequest = {
+    /**
+     * Application code this role belongs to
+     */
+    applicationCode: string;
+    /**
+     * Whether clients can manage this role
+     */
+    clientManaged?: boolean;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Display name
+     */
+    displayName: string;
+    /**
+     * Initial permissions
+     */
+    permissions?: Array<string>;
+    /**
+     * Role name (will be combined with app code to form code)
+     */
+    roleName: string;
+};
+export type CreateScheduledJobRequest = {
+    /**
+     * None = platform-scoped (anchor only); Some = client-scoped.
+     */
+    clientId?: string | null;
+    code: string;
+    concurrent?: boolean;
+    crons: Array<string>;
+    deliveryMaxAttempts?: number;
+    description?: string | null;
+    name: string;
+    payload?: unknown;
+    targetUrl?: string | null;
+    timeoutSeconds?: number | null;
+    timezone?: string;
+    tracksCompletion?: boolean;
+};
+/**
+ * Create subscription request
+ */
+export type CreateSubscriptionRequest = {
+    /**
+     * Client ID (optional, null = anchor-level)
+     */
+    clientId?: string | null;
+    /**
+     * Unique code
+     */
+    code: string;
+    /**
+     * Connection ID (references msg_connections, optional)
+     */
+    connectionId?: string | null;
+    /**
+     * Send raw event data only
+     */
+    dataOnly?: boolean;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Dispatch pool ID for rate limiting
+     */
+    dispatchPoolId?: string | null;
+    /**
+     * Webhook endpoint URL
+     */
+    endpoint: string;
+    /**
+     * Event types to listen to
+     */
+    eventTypes?: Array<EventTypeBindingRequest>;
+    /**
+     * Maximum retry attempts
+     */
+    maxRetries?: number | null;
+    /**
+     * Dispatch mode
+     */
+    mode?: string | null;
+    /**
+     * Human-readable name
+     */
+    name: string;
+    /**
+     * Service account ID for authentication
+     */
+    serviceAccountId?: string | null;
+    /**
+     * Timeout in seconds
+     */
+    timeoutSeconds?: number | null;
+};
+/**
+ * Create user request (matches Java CreateUserRequest)
+ */
+export type CreateUserRequest = {
+    /**
+     * Client ID (for client-bound users)
+     */
+    clientId?: string | null;
+    /**
+     * Email address
+     */
+    email: string;
+    /**
+     * When false, the platform skips its password complexity rules
+     * (uppercase/lowercase/digit/special) and only enforces a 2-character
+     * minimum. Intended for SDK callers that apply their own policy.
+     * Defaults to true.
+     */
+    enforcePasswordComplexity?: boolean | null;
+    /**
+     * Display name
+     */
+    name: string;
+    /**
+     * Password (optional - only for internal auth users)
+     */
+    password?: string | null;
+};
+/**
+ * Created response with ID
+ */
+export type CreatedResponse = {
+    id: string;
+};
+export type CredentialSummary = {
+    createdAt: string;
+    id: string;
+    lastUsedAt?: string | null;
+    name?: string | null;
+};
+/**
+ * Current user info response
+ */
+export type CurrentUserResponse = {
+    /**
+     * Client ID (for CLIENT scope users)
+     */
+    clientId?: string | null;
+    /**
+     * Accessible client IDs
+     */
+    clients: Array<string>;
+    /**
+     * Email address
+     */
+    email?: string | null;
+    /**
+     * Principal ID
+     */
+    id: string;
+    /**
+     * Display name
+     */
+    name: string;
+    /**
+     * Principal type (USER, SERVICE)
+     */
+    principalType: string;
+    /**
+     * Assigned roles
+     */
+    roles: Array<string>;
+    /**
+     * User scope (ANCHOR, PARTNER, CLIENT)
+     */
+    scope: string;
+};
+/**
+ * Dashboard metrics response.
+ *
+ * `total_events` and `total_jobs` are **approximate** — read from
+ * `pg_class.reltuples` (the planner's row estimate maintained by autovacuum/
+ * ANALYZE). Within a few % of accurate; sub-millisecond regardless of row
+ * count, where exact counts on `msg_events` / `msg_dispatch_jobs` would be a
+ * non-starter at production scale.
+ *
+ * `jobs_by_status` was removed: migration 015 dropped the status index on
+ * `msg_dispatch_jobs` (it's a write-optimized table; the read projection
+ * has the index). Per-status counts are now full table scans, so they're
+ * not surfaced here. If you need them, query the read projection directly.
+ */
+export type DashboardMetrics = {
+    /**
+     * Active dispatch pools
+     */
+    activePools: number;
+    /**
+     * Active subscriptions
+     */
+    activeSubscriptions: number;
+    /**
+     * Events in last hour. Currently always 0 — needs a time-windowed
+     * counter on the projection or an external metrics store.
+     */
+    eventsLastHour: number;
+    /**
+     * System health
+     */
+    health: SystemHealth;
+    /**
+     * Approximate total events received (planner estimate).
+     */
+    totalEvents: number;
+    /**
+     * Approximate total dispatch jobs (planner estimate).
+     */
+    totalJobs: number;
+};
+/**
+ * Dispatch attempt response DTO
+ */
+export type DispatchAttemptResponse = {
+    attemptNumber: number;
+    attemptedAt: string;
+    completedAt?: string | null;
+    durationMillis?: number | null;
+    errorMessage?: string | null;
+    errorType?: string | null;
+    responseBody?: string | null;
+    responseCode?: number | null;
+    success: boolean;
+};
+/**
+ * Filter options for dispatch jobs dropdowns — cascading filter support.
+ * Matches the TS version: queries distinct values from the read projection.
+ */
+export type DispatchJobFilterOptionsResponse = {
+    aggregates: Array<FilterOption>;
+    applications: Array<FilterOption>;
+    clients: Array<FilterOption>;
+    codes: Array<FilterOption>;
+    statuses: Array<FilterOption>;
+    subdomains: Array<FilterOption>;
+};
+/**
+ * Dispatch job read projection response (matches Java DispatchJobReadResponse)
+ */
+export type DispatchJobReadResponse = {
+    aggregate?: string | null;
+    application?: string | null;
+    attemptCount: number;
+    clientId?: string | null;
+    code: string;
+    completedAt?: string | null;
+    correlationId?: string | null;
+    createdAt: string;
+    dispatchPoolId?: string | null;
+    durationMillis?: number | null;
+    eventId?: string | null;
+    expiresAt?: string | null;
+    externalId?: string | null;
+    id: string;
+    idempotencyKey?: string | null;
+    isCompleted: boolean;
+    isTerminal: boolean;
+    kind: string;
+    lastAttemptAt?: string | null;
+    lastError?: string | null;
+    maxRetries: number;
+    messageGroup?: string | null;
+    mode: string;
+    projectedAt?: string | null;
+    protocol: string;
+    retryStrategy: string;
+    scheduledFor?: string | null;
+    sequence: number;
+    serviceAccountId?: string | null;
+    source?: string | null;
+    status: string;
+    subdomain?: string | null;
+    subject?: string | null;
+    subscriptionId?: string | null;
+    targetUrl: string;
+    timeoutSeconds: number;
+    updatedAt: string;
+};
+/**
+ * Dispatch job response DTO (matches Java DispatchJobReadResponse)
+ */
+export type DispatchJobResponse = {
+    attemptCount: number;
+    clientId?: string | null;
+    code: string;
+    completedAt?: string | null;
+    correlationId?: string | null;
+    createdAt: string;
+    dispatchPoolId?: string | null;
+    durationMillis?: number | null;
+    eventId?: string | null;
+    expiresAt?: string | null;
+    externalId?: string | null;
+    id: string;
+    idempotencyKey?: string | null;
+    isCompleted: boolean;
+    isTerminal: boolean;
+    kind: string;
+    lastAttemptAt?: string | null;
+    lastError?: string | null;
+    maxRetries: number;
+    messageGroup?: string | null;
+    mode: string;
+    protocol: string;
+    retryStrategy: string;
+    scheduledFor?: string | null;
+    sequence: number;
+    serviceAccountId?: string | null;
+    source?: string | null;
+    status: string;
+    subject?: string | null;
+    subscriptionId?: string | null;
+    targetUrl: string;
+    timeoutSeconds: number;
+    updatedAt: string;
+};
+/**
+ * Dispatch jobs filter options response
+ */
+export type DispatchJobsFilterOptions = {
+    clients: Array<FilterOption>;
+    eventTypes: Array<FilterOption>;
+    statuses: Array<FilterOption>;
+    subscriptions: Array<FilterOption>;
+};
+/**
+ * Dispatch pool filter options response
+ */
+export type DispatchPoolFilterOptions = {
+    dispatchPools: Array<FilterOption>;
+};
+/**
+ * Domain check response
+ */
+export type DomainCheckResponse = {
+    /**
+     * Authentication method for this domain
+     */
+    authMethod: AuthMethod;
+    /**
+     * Authorization URL if external IDP
+     */
+    authorizationUrl?: string | null;
+    /**
+     * The email domain
+     */
+    domain: string;
+    /**
+     * Provider ID if external IDP is required
+     */
+    providerId?: string | null;
+};
+/**
+ * Enhanced metrics for a processing pool
+ */
+export type EnhancedPoolMetrics = {
+    /**
+     * Metrics for the last 30 minutes
+     */
+    last30Min: WindowedMetrics;
+    /**
+     * Metrics for the last 5 minutes
+     */
+    last5Min: WindowedMetrics;
+    /**
+     * Processing time metrics (all time)
+     */
+    processingTime: ProcessingTimeMetrics;
+    /**
+     * Success rate (0.0 - 1.0)
+     */
+    successRate: number;
+    /**
+     * Total messages failed (all time)
+     */
+    totalFailure: number;
+    /**
+     * Total messages rate limited (all time)
+     */
+    totalRateLimited: number;
+    /**
+     * Total messages processed successfully (all time)
+     */
+    totalSuccess: number;
+};
+/**
+ * Entity audit logs response
+ */
+export type EntityAuditLogsResponse = {
+    auditLogs: Array<AuditLogResponse>;
+    entityId: string;
+    entityType: string;
+    total: number;
+};
+/**
+ * Entity types response
+ */
+export type EntityTypesResponse = {
+    entityTypes: Array<string>;
+};
+export type ErrorResponse = {
+    /**
+     * Machine-readable error code (e.g. ROLE_HAS_ASSIGNMENTS)
+     */
+    error: string;
+    /**
+     * Human-readable error message suitable for display
+     */
+    message: string;
+};
+/**
+ * Filter options for the events read model (cascading filters).
+ * Clients are served by the canonical `/bff/filter-options/clients` endpoint,
+ * so they aren't duplicated here.
+ */
+export type EventFilterOptions = {
+    aggregates: Array<string>;
+    applications: Array<string>;
+    subdomains: Array<string>;
+    types: Array<string>;
+};
+/**
+ * Event read projection — CQRS read model, matches msg_events_read table
+ */
+export type EventRead = {
+    aggregate?: string | null;
+    application?: string | null;
+    clientId?: string | null;
+    /**
+     * Denormalized client name for display
+     */
+    clientName?: string | null;
+    correlationId?: string | null;
+    id: string;
+    messageGroup?: string | null;
+    projectedAt: string;
+    source: string;
+    subdomain?: string | null;
+    subject?: string | null;
+    time: string;
+    type: string;
+};
+/**
+ * Event response DTO
+ */
+export type EventResponse = {
+    causationId?: string | null;
+    clientId?: string | null;
+    contextData?: Array<ContextDataDto>;
+    correlationId?: string | null;
+    createdAt: string;
+    data: unknown;
+    deduplicationId?: string | null;
+    eventType: string;
+    id: string;
+    messageGroup?: string | null;
+    source: string;
+    specVersion: string;
+    subject?: string | null;
+    time: string;
+};
+/**
+ * Event summary for list endpoints (no payload data)
+ */
+export type EventSummaryResponse = {
+    clientId?: string | null;
+    correlationId?: string | null;
+    createdAt: string;
+    eventType: string;
+    id: string;
+    messageGroup?: string | null;
+    source: string;
+    specVersion: string;
+    subject?: string | null;
+    time: string;
+};
+/**
+ * Event type binding request
+ */
+export type EventTypeBindingRequest = {
+    /**
+     * Event type code (with optional wildcards)
+     */
+    eventTypeCode: string;
+    /**
+     * Optional filter expression
+     */
+    filter?: string | null;
+};
+/**
+ * Event type binding response
+ */
+export type EventTypeBindingResponse = {
+    eventTypeCode: string;
+    filter?: string | null;
+};
+/**
+ * Event type filter options response
+ */
+export type EventTypeFilterOptions = {
+    applications: Array<FilterOption>;
+    eventTypes: Array<FilterOption>;
+    subdomains: Array<FilterOption>;
+};
+/**
+ * Event type list response (matches Java BffEventTypeListResponse)
+ */
+export type EventTypeListResponse = {
+    items: Array<EventTypeResponse>;
+};
+/**
+ * Event type response DTO (matches Java BffEventTypeResponse)
+ */
+export type EventTypeResponse = {
+    aggregate: string;
+    application: string;
+    code: string;
+    createdAt: string;
+    description?: string | null;
+    event: string;
+    id: string;
+    name: string;
+    specVersions: Array<SpecVersionResponse>;
+    status: string;
+    subdomain: string;
+    updatedAt: string;
+};
+/**
+ * Events filter options response (for events list page)
+ */
+export type EventsFilterOptions = {
+    applications: Array<FilterOption>;
+    clients: Array<FilterOption>;
+    eventTypes: Array<FilterOption>;
+    subdomains: Array<FilterOption>;
+};
+/**
+ * A filter option with value and label (matches TS FilterOption)
+ */
+export type FilterOption = {
+    label: string;
+    value: string;
+};
+export type FireRequest = {
+    correlationId?: string | null;
+};
+/**
+ * Grant client access request
+ */
+export type GrantClientAccessRequest = {
+    /**
+     * Client ID to grant access to
+     */
+    clientId: string;
+};
+/**
+ * Grant permission request
+ */
+export type GrantPermissionRequest = {
+    /**
+     * Permission to grant
+     */
+    permission: string;
+};
+/**
+ * In-flight message info
+ */
+export type InFlightMessage = {
+    attempt: number;
+    elapsedMs: number;
+    eventId?: string | null;
+    jobId: string;
+    messageGroup?: string | null;
+    poolId?: string | null;
+    startedAt: string;
+    targetUrl: string;
+};
+/**
+ * In-flight messages response
+ */
+export type InFlightMessagesResponse = {
+    byMessageGroup: {
+        [key: string]: number;
+    };
+    byPool: {
+        [key: string]: number;
+    };
+    messages: Array<InFlightMessage>;
+    totalInFlight: number;
+};
+export type InstanceCompleteRequest = {
+    result?: unknown;
+    status: CompletionStatusDto;
+};
+export type InstanceLogRequest = {
+    level?: LogLevelDto;
+    message: string;
+    metadata?: unknown;
+};
+export type InstanceLogResponse = {
+    createdAt: string;
+    id: string;
+    instanceId: string;
+    level: string;
+    message: string;
+    metadata?: unknown;
+};
+export type LogLevelDto = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+/**
+ * Login request
+ */
+export type LoginRequest = {
+    /**
+     * Email address
+     */
+    email: string;
+    /**
+     * Password
+     */
+    password: string;
+    /**
+     * Remember me (extends session duration)
+     */
+    rememberMe?: boolean;
+};
+/**
+ * Login response - matches Java LoginResponse record
+ */
+export type LoginResponse = {
+    /**
+     * Client ID (for CLIENT scope users)
+     */
+    clientId?: string | null;
+    /**
+     * Email address
+     */
+    email: string;
+    /**
+     * Display name
+     */
+    name: string;
+    /**
+     * Principal ID
+     */
+    principalId: string;
+    /**
+     * Assigned roles
+     */
+    roles: Array<string>;
+};
+/**
+ * List response wrapper for `GET /api/oauth-clients`.
+ */
+export type OAuthClientListResponse = {
+    clients: Array<OAuthClientResponse>;
+};
+/**
+ * OAuth client response DTO
+ */
+export type OAuthClientResponse = {
+    active: boolean;
+    allowedOrigins?: Array<string>;
+    applicationIds: Array<string>;
+    clientId: string;
+    clientName: string;
+    clientType: string;
+    createdAt: string;
+    createdBy?: string | null;
+    defaultScopes: Array<string>;
+    grantTypes: Array<string>;
+    id: string;
+    pkceRequired: boolean;
+    redirectUris: Array<string>;
+    serviceAccountPrincipalId?: string | null;
+    updatedAt: string;
+};
+/**
+ * Operations response
+ */
+export type OperationsResponse = {
+    operations: Array<string>;
+};
+/**
+ * Paginated response wrapper
+ */
+export type PaginatedResponseScheduledJobInstanceResponse = {
+    data: Array<{
+        clientId?: string | null;
+        completedAt?: string | null;
+        completionResult?: unknown;
+        completionStatus?: string | null;
+        correlationId?: string | null;
+        createdAt: string;
+        deliveredAt?: string | null;
+        deliveryAttempts: number;
+        deliveryError?: string | null;
+        firedAt: string;
+        id: string;
+        jobCode: string;
+        scheduledFor?: string | null;
+        scheduledJobId: string;
+        status: string;
+        triggerKind: string;
+    }>;
+    page: number;
+    size: number;
+    total: number;
+    total_pages: number;
+};
+/**
+ * Paginated response wrapper
+ */
+export type PaginatedResponseScheduledJobResponse = {
+    data: Array<{
+        clientId?: string | null;
+        code: string;
+        concurrent: boolean;
+        createdAt: string;
+        createdBy?: string | null;
+        crons: Array<string>;
+        deliveryMaxAttempts: number;
+        description?: string | null;
+        /**
+         * Computed: true if any non-terminal instance currently exists.
+         */
+        hasActiveInstance: boolean;
+        id: string;
+        lastFiredAt?: string | null;
+        name: string;
+        payload?: unknown;
+        status: string;
+        targetUrl?: string | null;
+        timeoutSeconds?: number | null;
+        timezone: string;
+        tracksCompletion: boolean;
+        updatedAt: string;
+        updatedBy?: string | null;
+        version: number;
+    }>;
+    page: number;
+    size: number;
+    total: number;
+    total_pages: number;
+};
+export type PaginationParams = {
+    /**
+     * Page number (1-based)
+     */
+    page?: number;
+    /**
+     * Page size. Aliases: limit, pageSize, page_size.
+     */
+    size?: number;
+};
+/**
+ * Permission list response
+ */
+export type PermissionListResponse = {
+    permissions: Array<PermissionResponse>;
+    total: number;
+};
+/**
+ * Permission response
+ */
+export type PermissionResponse = {
+    action: string;
+    aggregate: string;
+    application: string;
+    context: string;
+    description: string;
+    permission: string;
+};
+export type PoolStats = {
+    active_workers: number;
+    concurrency: number;
+    is_rate_limited: boolean;
+    message_group_count: number;
+    metrics?: null | EnhancedPoolMetrics;
+    pool_code: string;
+    queue_capacity: number;
+    queue_size: number;
+    rate_limit_per_minute?: number | null;
+};
+/**
+ * Pool statistics response (with enhanced metrics)
+ */
+export type PoolStatsResponse = {
+    /**
+     * Aggregate success rate across all pools
+     */
+    aggregateSuccessRate: number;
+    /**
+     * Aggregate throughput (messages/sec) across all pools
+     */
+    aggregateThroughputPerSec: number;
+    pools: Array<PoolStats>;
+    totalActiveWorkers: number;
+    totalPools: number;
+    totalQueueSize: number;
+};
+/**
+ * Principal list response (matches Java PrincipalListResponse)
+ */
+export type PrincipalListResponse = {
+    principals: Array<PrincipalResponse>;
+    total: number;
+};
+/**
+ * Principal response DTO (matches Java PrincipalDto)
+ */
+export type PrincipalResponse = {
+    active: boolean;
+    clientId?: string | null;
+    createdAt: string;
+    email?: string | null;
+    /**
+     * Granted client IDs (matches Java's Set<String>)
+     */
+    grantedClientIds: Array<string>;
+    id: string;
+    idpType?: string | null;
+    /**
+     * Whether user is an anchor domain user
+     */
+    isAnchorUser: boolean;
+    name: string;
+    /**
+     * Role names (matches Java's Set<String>)
+     */
+    roles: Array<string>;
+    scope: string;
+    type: string;
+    updatedAt: string;
+};
+/**
+ * Processing time metrics with percentiles
+ */
+export type ProcessingTimeMetrics = {
+    /**
+     * Average processing time in milliseconds
+     */
+    avgMs: number;
+    /**
+     * Maximum processing time in milliseconds
+     */
+    maxMs: number;
+    /**
+     * Minimum processing time in milliseconds
+     */
+    minMs: number;
+    /**
+     * 50th percentile (median) in milliseconds
+     */
+    p50Ms: number;
+    /**
+     * 95th percentile in milliseconds
+     */
+    p95Ms: number;
+    /**
+     * 99th percentile in milliseconds
+     */
+    p99Ms: number;
+    /**
+     * Total samples collected
+     */
+    sampleCount: number;
+};
+/**
+ * Refresh token request
+ */
+export type RefreshTokenRequest = {
+    /**
+     * The refresh token
+     */
+    refreshToken: string;
+};
+/**
+ * Regenerate secret response
+ */
+export type RegenerateSecretResponse = {
+    /**
+     * The new plaintext client secret (shown once)
+     */
+    clientSecret: string;
+};
+/**
+ * Optional metadata for a passkey registration ceremony.
+ */
+export type RegisterBeginRequest = {
+    /**
+     * Display name shown in the authenticator UI (defaults to the user's name).
+     */
+    displayName?: string | null;
+};
+/**
+ * WebAuthn registration challenge to hand to `navigator.credentials.create()`.
+ */
+export type RegisterBeginResponse = {
+    /**
+     * `PublicKeyCredentialCreationOptions` JSON for the browser.
+     */
+    options: {
+        [key: string]: unknown;
+    };
+    /**
+     * Opaque ceremony state token; pass back unchanged on `register/complete`.
+     */
+    stateId: string;
+};
+/**
+ * Browser's registration response, plus the ceremony state token.
+ */
+export type RegisterCompleteRequest = {
+    /**
+     * The `PublicKeyCredential` returned by `navigator.credentials.create()`.
+     */
+    credential: {
+        [key: string]: unknown;
+    };
+    /**
+     * User-supplied label (e.g. "Andrew's iPhone").
+     */
+    name?: string | null;
+    stateId: string;
+};
+export type RegisterCompleteResponse = {
+    credentialId: string;
+};
+/**
+ * Reset password request
+ */
+export type ResetPasswordRequest = {
+    /**
+     * When false, the platform skips its password complexity rules
+     * (uppercase/lowercase/digit/special) and only enforces a 2-character
+     * minimum. Intended for SDK callers that apply their own policy.
+     * Defaults to true.
+     */
+    enforcePasswordComplexity?: boolean | null;
+    /**
+     * New password (min 8 characters)
+     */
+    newPassword: string;
+};
+/**
+ * Role assignment DTO (matches Java RoleAssignmentDto for GET /roles)
+ */
+export type RoleAssignmentDto = {
+    assignedAt: string;
+    assignmentSource: string;
+    id: string;
+    roleName: string;
+};
+/**
+ * Role list response (matches Java RoleListResponse)
+ */
+export type RoleListResponse = {
+    roles: Array<RoleResponse>;
+    total: number;
+};
+/**
+ * Role response DTO (matches Java BffRoleResponse)
+ */
+export type RoleResponse = {
+    applicationCode: string;
+    clientManaged: boolean;
+    createdAt: string;
+    description?: string | null;
+    displayName: string;
+    id: string;
+    name: string;
+    permissions: Array<string>;
+    shortName: string;
+    source: string;
+    updatedAt: string;
+};
+/**
+ * Roles list response
+ */
+export type RolesListResponse = {
+    roles: Array<RoleAssignmentDto>;
+};
+export type ScheduledJobInstanceResponse = {
+    clientId?: string | null;
+    completedAt?: string | null;
+    completionResult?: unknown;
+    completionStatus?: string | null;
+    correlationId?: string | null;
+    createdAt: string;
+    deliveredAt?: string | null;
+    deliveryAttempts: number;
+    deliveryError?: string | null;
+    firedAt: string;
+    id: string;
+    jobCode: string;
+    scheduledFor?: string | null;
+    scheduledJobId: string;
+    status: string;
+    triggerKind: string;
+};
+export type ScheduledJobResponse = {
+    clientId?: string | null;
+    code: string;
+    concurrent: boolean;
+    createdAt: string;
+    createdBy?: string | null;
+    crons: Array<string>;
+    deliveryMaxAttempts: number;
+    description?: string | null;
+    /**
+     * Computed: true if any non-terminal instance currently exists.
+     */
+    hasActiveInstance: boolean;
+    id: string;
+    lastFiredAt?: string | null;
+    name: string;
+    payload?: unknown;
+    status: string;
+    targetUrl?: string | null;
+    timeoutSeconds?: number | null;
+    timezone: string;
+    tracksCompletion: boolean;
+    updatedAt: string;
+    updatedBy?: string | null;
+    version: number;
+};
+/**
+ * Set application access request (batch replace)
+ */
+export type SetApplicationAccessRequest = {
+    /**
+     * Application IDs to grant access to (replaces existing)
+     */
+    applicationIds: Array<string>;
+};
+/**
+ * Set application access result response
+ */
+export type SetApplicationAccessResponse = {
+    added: number;
+    applications: Array<ApplicationAccessResponse>;
+    removed: number;
+};
+/**
+ * Schema version response (matches Java BffSpecVersionResponse)
+ */
+export type SpecVersionResponse = {
+    /**
+     * Schema content (included for detail views)
+     */
+    schema?: unknown;
+    status: string;
+    /**
+     * Version string (converted from u32 to "X.0" format for frontend compatibility)
+     */
+    version: string;
+};
+/**
+ * Standby status response
+ */
+export type StandbyStatus = {
+    /**
+     * Cluster members
+     */
+    clusterMembers: Array<ClusterMember>;
+    /**
+     * Instance ID
+     */
+    instanceId: string;
+    /**
+     * Whether this instance is the leader
+     */
+    isLeader: boolean;
+    /**
+     * Last heartbeat time
+     */
+    lastHeartbeat?: string | null;
+    /**
+     * Leader instance ID (if known)
+     */
+    leaderId?: string | null;
+    /**
+     * Current role (LEADER or STANDBY)
+     */
+    role: string;
+};
+/**
+ * Status change request (for suspend/deactivate)
+ */
+export type StatusChangeRequest = {
+    /**
+     * Reason for the status change
+     */
+    reason: string;
+};
+/**
+ * Status change response
+ */
+export type StatusChangeResponse = {
+    message: string;
+};
+/**
+ * Subdomains list response
+ */
+export type SubdomainsResponse = {
+    subdomains: Array<FilterOption>;
+};
+/**
+ * Subscription filter options response
+ */
+export type SubscriptionFilterOptions = {
+    subscriptions: Array<FilterOption>;
+};
+/**
+ * Subscription list response (matches Java SubscriptionListResponse)
+ */
+export type SubscriptionListResponse = {
+    subscriptions: Array<SubscriptionResponse>;
+    total: number;
+};
+/**
+ * Subscription response DTO (matches Java SubscriptionDto)
+ */
+export type SubscriptionResponse = {
+    applicationCode?: string | null;
+    clientId?: string | null;
+    clientIdentifier?: string | null;
+    clientScoped: boolean;
+    code: string;
+    connectionId?: string | null;
+    createdAt: string;
+    customConfig: Array<ConfigEntryResponse>;
+    dataOnly: boolean;
+    delaySeconds: number;
+    description?: string | null;
+    dispatchPoolCode?: string | null;
+    dispatchPoolId?: string | null;
+    endpoint: string;
+    eventTypes: Array<EventTypeBindingResponse>;
+    id: string;
+    maxAgeSeconds: number;
+    maxRetries: number;
+    mode: string;
+    name: string;
+    queue?: string | null;
+    sequence: number;
+    serviceAccountId?: string | null;
+    source?: string | null;
+    status: string;
+    timeoutSeconds: number;
+    updatedAt: string;
+};
+/**
+ * Success response with optional message
+ */
+export type SuccessResponse = {
+    message?: string | null;
+    success: boolean;
+};
+/**
+ * A single event type input for sync
+ */
+export type SyncEventTypeInputRequest = {
+    /**
+     * Full code (application:subdomain:aggregate:event)
+     */
+    code: string;
+    description?: string | null;
+    name: string;
+};
+/**
+ * Sync event types request (admin)
+ */
+export type SyncEventTypesRequest = {
+    /**
+     * Application code
+     */
+    applicationCode: string;
+    /**
+     * Event types to sync
+     */
+    eventTypes: Array<SyncEventTypeInputRequest>;
+};
+/**
+ * Sync result response
+ */
+export type SyncResultResponse = {
+    created: number;
+    deleted: number;
+    updated: number;
+};
+/**
+ * Event type binding for sync subscription input
+ */
+export type SyncSubscriptionEventTypeRequest = {
+    eventTypeCode: string;
+    filter?: string | null;
+};
+/**
+ * A single subscription input for sync
+ */
+export type SyncSubscriptionInputRequest = {
+    code: string;
+    connectionId?: string | null;
+    dataOnly?: boolean;
+    description?: string | null;
+    dispatchPoolCode?: string | null;
+    eventTypes: Array<SyncSubscriptionEventTypeRequest>;
+    maxRetries?: number | null;
+    mode?: string | null;
+    name: string;
+    target: string;
+    timeoutSeconds?: number | null;
+};
+/**
+ * Sync subscriptions request (admin)
+ */
+export type SyncSubscriptionsRequest = {
+    /**
+     * Application code
+     */
+    applicationCode: string;
+    /**
+     * Subscriptions to sync
+     */
+    subscriptions: Array<SyncSubscriptionInputRequest>;
+};
+/**
+ * System health info
+ */
+export type SystemHealth = {
+    cpuUsagePercent: number;
+    memoryUsedMb: number;
+    status: string;
+    uptimeSeconds: number;
+};
+/**
+ * Token refresh response
+ */
+export type TokenRefreshResponse = {
+    /**
+     * New access token
+     */
+    accessToken: string;
+    /**
+     * Expiration time in seconds
+     */
+    expiresIn: number;
+    /**
+     * New refresh token (rotation)
+     */
+    refreshToken: string;
+    /**
+     * Token type (always "Bearer")
+     */
+    tokenType: string;
+};
+/**
+ * Update client applications request (matches Java)
+ */
+export type UpdateClientApplicationsRequest = {
+    /**
+     * List of application IDs to enable
+     */
+    enabledApplicationIds: Array<string>;
+};
+/**
+ * Update client request
+ */
+export type UpdateClientRequest = {
+    /**
+     * Human-readable name
+     */
+    name?: string | null;
+};
+/**
+ * Update event type request
+ */
+export type UpdateEventTypeRequest = {
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Human-readable name
+     */
+    name?: string | null;
+};
+/**
+ * Update OAuth client request
+ */
+export type UpdateOAuthClientRequest = {
+    /**
+     * Whether client is active
+     */
+    active?: boolean | null;
+    /**
+     * Allowed CORS origins
+     */
+    allowedOrigins?: Array<string> | null;
+    /**
+     * Application IDs this client can access
+     */
+    applicationIds?: Array<string> | null;
+    /**
+     * Human-readable name
+     */
+    clientName?: string | null;
+    /**
+     * Allowed grant types
+     */
+    grantTypes?: Array<string> | null;
+    /**
+     * Whether PKCE is required
+     */
+    pkceRequired?: boolean | null;
+    /**
+     * Allowed redirect URIs
+     */
+    redirectUris?: Array<string> | null;
+};
+/**
+ * Update principal request
+ */
+export type UpdatePrincipalRequest = {
+    /**
+     * Active status
+     */
+    active?: boolean | null;
+    /**
+     * Home client ID (required when scope is CLIENT, ignored otherwise).
+     * Changing client requires anchor.
+     */
+    clientId?: string | null;
+    /**
+     * First name (for users)
+     */
+    firstName?: string | null;
+    /**
+     * Last name (for users)
+     */
+    lastName?: string | null;
+    /**
+     * Display name
+     */
+    name?: string | null;
+    /**
+     * User scope (ANCHOR / PARTNER / CLIENT). Changing scope requires anchor.
+     */
+    scope?: string | null;
+};
+/**
+ * Update role request
+ */
+export type UpdateRoleRequest = {
+    /**
+     * Whether clients can manage this role
+     */
+    clientManaged?: boolean | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Display name
+     */
+    displayName?: string | null;
+    /**
+     * Replace the role's permission set. Omit to leave permissions unchanged.
+     */
+    permissions?: Array<string> | null;
+};
+export type UpdateScheduledJobRequest = {
+    concurrent?: boolean | null;
+    crons?: Array<string> | null;
+    deliveryMaxAttempts?: number | null;
+    description?: string | null;
+    name?: string | null;
+    payload?: unknown;
+    targetUrl?: string | null;
+    timeoutSeconds?: number | null;
+    timezone?: string | null;
+    tracksCompletion?: boolean | null;
+};
+/**
+ * Update subscription request
+ */
+export type UpdateSubscriptionRequest = {
+    /**
+     * Connection ID
+     */
+    connectionId?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Webhook endpoint URL
+     */
+    endpoint?: string | null;
+    /**
+     * Maximum retry attempts
+     */
+    maxRetries?: number | null;
+    /**
+     * Human-readable name
+     */
+    name?: string | null;
+    /**
+     * Timeout in seconds
+     */
+    timeoutSeconds?: number | null;
+};
+/**
+ * Time-windowed metrics
+ */
+export type WindowedMetrics = {
+    /**
+     * Messages failed in this window
+     */
+    failureCount: number;
+    /**
+     * Processing time metrics for this window
+     */
+    processingTime: ProcessingTimeMetrics;
+    /**
+     * Messages rate limited in this window
+     */
+    rateLimitedCount: number;
+    /**
+     * Messages processed successfully in this window
+     */
+    successCount: number;
+    /**
+     * Success rate in this window (0.0 - 1.0)
+     */
+    successRate: number;
+    /**
+     * Throughput (messages per second)
+     */
+    throughputPerSec: number;
+    /**
+     * Window duration in seconds
+     */
+    windowDurationSecs: number;
+    /**
+     * Window start time
+     */
+    windowStart: string;
+};
+export type GetApiAdminAuditLogsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Opaque cursor returned by a previous page's `nextCursor`. Omit for
+         * the first page.
+         */
+        after?: string;
+        /**
+         * Page size (default 50, capped at 200).
+         */
+        pageSize?: number;
+        /**
+         * Filter by entity type
+         */
+        entityType?: string;
+        /**
+         * Filter by entity ID
+         */
+        entityId?: string;
+        /**
+         * Filter by operation (Java calls this "operation", maps to action internally)
+         */
+        operation?: string;
+        /**
+         * Filter by principal ID
+         */
+        principalId?: string;
+    };
+    url: '/api/audit-logs';
+};
+export type GetApiAdminAuditLogsResponses = {
+    /**
+     * List of audit logs
+     */
+    200: AuditLogListResponse;
+};
+export type GetApiAdminAuditLogsResponse = GetApiAdminAuditLogsResponses[keyof GetApiAdminAuditLogsResponses];
+export type GetApiAdminAuditLogsApplicationIdsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/audit-logs/application-ids';
+};
+export type GetApiAdminAuditLogsApplicationIdsResponses = {
+    /**
+     * List of distinct application IDs
+     */
+    200: ApplicationIdsResponse;
+};
+export type GetApiAdminAuditLogsApplicationIdsResponse = GetApiAdminAuditLogsApplicationIdsResponses[keyof GetApiAdminAuditLogsApplicationIdsResponses];
+export type GetApiAdminAuditLogsClientIdsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/audit-logs/client-ids';
+};
+export type GetApiAdminAuditLogsClientIdsResponses = {
+    /**
+     * List of distinct client IDs
+     */
+    200: ClientIdsResponse;
+};
+export type GetApiAdminAuditLogsClientIdsResponse = GetApiAdminAuditLogsClientIdsResponses[keyof GetApiAdminAuditLogsClientIdsResponses];
+export type GetApiAdminAuditLogsEntityTypesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/audit-logs/entity-types';
+};
+export type GetApiAdminAuditLogsEntityTypesResponses = {
+    /**
+     * List of distinct entity types
+     */
+    200: EntityTypesResponse;
+};
+export type GetApiAdminAuditLogsEntityTypesResponse = GetApiAdminAuditLogsEntityTypesResponses[keyof GetApiAdminAuditLogsEntityTypesResponses];
+export type GetApiAdminAuditLogsEntityByEntityTypeByEntityIdData = {
+    body?: never;
+    path: {
+        /**
+         * Entity type
+         */
+        entity_type: string;
+        /**
+         * Entity ID
+         */
+        entity_id: string;
+    };
+    query?: never;
+    url: '/api/audit-logs/entity/{entity_type}/{entity_id}';
+};
+export type GetApiAdminAuditLogsEntityByEntityTypeByEntityIdResponses = {
+    /**
+     * Audit logs for entity
+     */
+    200: EntityAuditLogsResponse;
+};
+export type GetApiAdminAuditLogsEntityByEntityTypeByEntityIdResponse = GetApiAdminAuditLogsEntityByEntityTypeByEntityIdResponses[keyof GetApiAdminAuditLogsEntityByEntityTypeByEntityIdResponses];
+export type GetApiAdminAuditLogsOperationsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/audit-logs/operations';
+};
+export type GetApiAdminAuditLogsOperationsResponses = {
+    /**
+     * List of distinct operations
+     */
+    200: OperationsResponse;
+};
+export type GetApiAdminAuditLogsOperationsResponse = GetApiAdminAuditLogsOperationsResponses[keyof GetApiAdminAuditLogsOperationsResponses];
+export type GetApiAdminAuditLogsPrincipalByPrincipalIdData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        principal_id: string;
+    };
+    query?: never;
+    url: '/api/audit-logs/principal/{principal_id}';
+};
+export type GetApiAdminAuditLogsPrincipalByPrincipalIdResponses = {
+    /**
+     * Audit logs for principal
+     */
+    200: Array<AuditLogResponse>;
+};
+export type GetApiAdminAuditLogsPrincipalByPrincipalIdResponse = GetApiAdminAuditLogsPrincipalByPrincipalIdResponses[keyof GetApiAdminAuditLogsPrincipalByPrincipalIdResponses];
+export type GetApiAdminAuditLogsRecentData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/audit-logs/recent';
+};
+export type GetApiAdminAuditLogsRecentResponses = {
+    /**
+     * Recent audit logs
+     */
+    200: Array<AuditLogResponse>;
+};
+export type GetApiAdminAuditLogsRecentResponse = GetApiAdminAuditLogsRecentResponses[keyof GetApiAdminAuditLogsRecentResponses];
+export type GetApiAdminAuditLogsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Audit log ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/audit-logs/{id}';
+};
+export type GetApiAdminAuditLogsByIdErrors = {
+    /**
+     * Audit log not found
+     */
+    404: unknown;
+};
+export type GetApiAdminAuditLogsByIdResponses = {
+    /**
+     * Audit log found
+     */
+    200: AuditLogDetailResponse;
+};
+export type GetApiAdminAuditLogsByIdResponse = GetApiAdminAuditLogsByIdResponses[keyof GetApiAdminAuditLogsByIdResponses];
+export type GetApiAdminClientsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number
+         */
+        page?: number;
+        /**
+         * Items per page
+         */
+        limit?: number;
+        /**
+         * Filter by status
+         */
+        status?: string;
+    };
+    url: '/api/clients';
+};
+export type GetApiAdminClientsResponses = {
+    /**
+     * List of clients
+     */
+    200: ClientListResponse;
+};
+export type GetApiAdminClientsResponse = GetApiAdminClientsResponses[keyof GetApiAdminClientsResponses];
+export type PostApiAdminClientsData = {
+    body: CreateClientRequest;
+    path?: never;
+    query?: never;
+    url: '/api/clients';
+};
+export type PostApiAdminClientsErrors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * Duplicate identifier
+     */
+    409: unknown;
+};
+export type PostApiAdminClientsResponses = {
+    /**
+     * Client created
+     */
+    201: CreatedResponse;
+};
+export type PostApiAdminClientsResponse = PostApiAdminClientsResponses[keyof PostApiAdminClientsResponses];
+export type GetApiAdminClientsByIdentifierByIdentifierData = {
+    body?: never;
+    path: {
+        /**
+         * Client identifier/slug
+         */
+        identifier: string;
+    };
+    query?: never;
+    url: '/api/clients/by-identifier/{identifier}';
+};
+export type GetApiAdminClientsByIdentifierByIdentifierErrors = {
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type GetApiAdminClientsByIdentifierByIdentifierResponses = {
+    /**
+     * Client found
+     */
+    200: ClientResponse;
+};
+export type GetApiAdminClientsByIdentifierByIdentifierResponse = GetApiAdminClientsByIdentifierByIdentifierResponses[keyof GetApiAdminClientsByIdentifierByIdentifierResponses];
+export type GetApiAdminClientsSearchData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Search term
+         */
+        q?: string;
+    };
+    url: '/api/clients/search';
+};
+export type GetApiAdminClientsSearchResponses = {
+    /**
+     * Search results
+     */
+    200: ClientListResponse;
+};
+export type GetApiAdminClientsSearchResponse = GetApiAdminClientsSearchResponses[keyof GetApiAdminClientsSearchResponses];
+export type DeleteApiAdminClientsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}';
+};
+export type DeleteApiAdminClientsByIdErrors = {
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type DeleteApiAdminClientsByIdResponses = {
+    /**
+     * Client deleted
+     */
+    204: void;
+};
+export type DeleteApiAdminClientsByIdResponse = DeleteApiAdminClientsByIdResponses[keyof DeleteApiAdminClientsByIdResponses];
+export type GetApiAdminClientsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}';
+};
+export type GetApiAdminClientsByIdErrors = {
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type GetApiAdminClientsByIdResponses = {
+    /**
+     * Client found
+     */
+    200: ClientResponse;
+};
+export type GetApiAdminClientsByIdResponse = GetApiAdminClientsByIdResponses[keyof GetApiAdminClientsByIdResponses];
+export type PutApiAdminClientsByIdData = {
+    body: UpdateClientRequest;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}';
+};
+export type PutApiAdminClientsByIdErrors = {
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type PutApiAdminClientsByIdResponses = {
+    /**
+     * Client updated
+     */
+    204: void;
+};
+export type PutApiAdminClientsByIdResponse = PutApiAdminClientsByIdResponses[keyof PutApiAdminClientsByIdResponses];
+export type PostApiAdminClientsByIdActivateData = {
+    body?: never;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}/activate';
+};
+export type PostApiAdminClientsByIdActivateErrors = {
+    /**
+     * Insufficient permissions
+     */
+    403: unknown;
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type PostApiAdminClientsByIdActivateResponses = {
+    /**
+     * Client activated
+     */
+    200: StatusChangeResponse;
+};
+export type PostApiAdminClientsByIdActivateResponse = PostApiAdminClientsByIdActivateResponses[keyof PostApiAdminClientsByIdActivateResponses];
+export type GetApiAdminClientsByIdApplicationsData = {
+    body?: never;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}/applications';
+};
+export type GetApiAdminClientsByIdApplicationsErrors = {
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type GetApiAdminClientsByIdApplicationsResponses = {
+    /**
+     * Client applications
+     */
+    200: ClientApplicationsResponse;
+};
+export type GetApiAdminClientsByIdApplicationsResponse = GetApiAdminClientsByIdApplicationsResponses[keyof GetApiAdminClientsByIdApplicationsResponses];
+export type PutApiAdminClientsByIdApplicationsData = {
+    body: UpdateClientApplicationsRequest;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}/applications';
+};
+export type PutApiAdminClientsByIdApplicationsErrors = {
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type PutApiAdminClientsByIdApplicationsResponses = {
+    /**
+     * Applications updated
+     */
+    204: void;
+};
+export type PutApiAdminClientsByIdApplicationsResponse = PutApiAdminClientsByIdApplicationsResponses[keyof PutApiAdminClientsByIdApplicationsResponses];
+export type PostApiAdminClientsByIdApplicationsByAppIdDisableData = {
+    body?: never;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+        /**
+         * Application ID
+         */
+        application_id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}/applications/{application_id}/disable';
+};
+export type PostApiAdminClientsByIdApplicationsByAppIdDisableErrors = {
+    /**
+     * Client or application not found
+     */
+    404: unknown;
+};
+export type PostApiAdminClientsByIdApplicationsByAppIdDisableResponses = {
+    /**
+     * Application disabled
+     */
+    204: void;
+};
+export type PostApiAdminClientsByIdApplicationsByAppIdDisableResponse = PostApiAdminClientsByIdApplicationsByAppIdDisableResponses[keyof PostApiAdminClientsByIdApplicationsByAppIdDisableResponses];
+export type PostApiAdminClientsByIdApplicationsByAppIdEnableData = {
+    body?: never;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+        /**
+         * Application ID
+         */
+        application_id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}/applications/{application_id}/enable';
+};
+export type PostApiAdminClientsByIdApplicationsByAppIdEnableErrors = {
+    /**
+     * Client or application not found
+     */
+    404: unknown;
+};
+export type PostApiAdminClientsByIdApplicationsByAppIdEnableResponses = {
+    /**
+     * Application enabled
+     */
+    204: void;
+};
+export type PostApiAdminClientsByIdApplicationsByAppIdEnableResponse = PostApiAdminClientsByIdApplicationsByAppIdEnableResponses[keyof PostApiAdminClientsByIdApplicationsByAppIdEnableResponses];
+export type PostApiAdminClientsByIdDeactivateData = {
+    body: StatusChangeRequest;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}/deactivate';
+};
+export type PostApiAdminClientsByIdDeactivateErrors = {
+    /**
+     * Insufficient permissions
+     */
+    403: unknown;
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type PostApiAdminClientsByIdDeactivateResponses = {
+    /**
+     * Client deactivated
+     */
+    200: StatusChangeResponse;
+};
+export type PostApiAdminClientsByIdDeactivateResponse = PostApiAdminClientsByIdDeactivateResponses[keyof PostApiAdminClientsByIdDeactivateResponses];
+export type PostApiAdminClientsByIdNotesData = {
+    body: AddNoteRequest;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}/notes';
+};
+export type PostApiAdminClientsByIdNotesErrors = {
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type PostApiAdminClientsByIdNotesResponses = {
+    /**
+     * Note added
+     */
+    200: AddNoteResponse;
+};
+export type PostApiAdminClientsByIdNotesResponse = PostApiAdminClientsByIdNotesResponses[keyof PostApiAdminClientsByIdNotesResponses];
+export type PostApiAdminClientsByIdSuspendData = {
+    body: StatusChangeRequest;
+    path: {
+        /**
+         * Client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/clients/{id}/suspend';
+};
+export type PostApiAdminClientsByIdSuspendErrors = {
+    /**
+     * Insufficient permissions
+     */
+    403: unknown;
+    /**
+     * Client not found
+     */
+    404: unknown;
+};
+export type PostApiAdminClientsByIdSuspendResponses = {
+    /**
+     * Client suspended
+     */
+    200: StatusChangeResponse;
+};
+export type PostApiAdminClientsByIdSuspendResponse = PostApiAdminClientsByIdSuspendResponses[keyof PostApiAdminClientsByIdSuspendResponses];
+export type GetApiAdminDispatchJobsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Result size. Default 50, capped at 1000.
+         */
+        size?: number;
+        /**
+         * Filter by event ID
+         */
+        eventId?: string;
+        /**
+         * Filter by correlation ID
+         */
+        correlationId?: string;
+        /**
+         * Filter by subscription ID
+         */
+        subscriptionId?: string;
+        /**
+         * Filter by client IDs (comma-separated)
+         */
+        clientIds?: string;
+        /**
+         * Filter by statuses (comma-separated)
+         */
+        statuses?: string;
+        /**
+         * Filter by application codes (comma-separated)
+         */
+        applications?: string;
+        /**
+         * Filter by subdomains (comma-separated)
+         */
+        subdomains?: string;
+        /**
+         * Filter by aggregates (comma-separated)
+         */
+        aggregates?: string;
+        /**
+         * Filter by codes (comma-separated)
+         */
+        codes?: string;
+        /**
+         * Free-text search across code, subject, source
+         */
+        source?: string;
+    };
+    url: '/api/dispatch-jobs';
+};
+export type GetApiAdminDispatchJobsResponses = {
+    /**
+     * List of dispatch jobs
+     */
+    200: Array<DispatchJobReadResponse>;
+};
+export type GetApiAdminDispatchJobsResponse = GetApiAdminDispatchJobsResponses[keyof GetApiAdminDispatchJobsResponses];
+export type PostApiAdminDispatchJobsData = {
+    body: CreateDispatchJobRequest;
+    path?: never;
+    query?: never;
+    url: '/api/dispatch-jobs';
+};
+export type PostApiAdminDispatchJobsErrors = {
+    /**
+     * Invalid request
+     */
+    400: unknown;
+    /**
+     * No access to client
+     */
+    403: unknown;
+};
+export type PostApiAdminDispatchJobsResponses = {
+    /**
+     * Dispatch job created
+     */
+    201: CreatedResponse;
+};
+export type PostApiAdminDispatchJobsResponse = PostApiAdminDispatchJobsResponses[keyof PostApiAdminDispatchJobsResponses];
+export type GetApiAdminDispatchJobsByEventByEventIdData = {
+    body?: never;
+    path: {
+        /**
+         * Event ID
+         */
+        event_id: string;
+    };
+    query?: never;
+    url: '/api/dispatch-jobs/by-event/{event_id}';
+};
+export type GetApiAdminDispatchJobsByEventByEventIdResponses = {
+    /**
+     * Dispatch jobs for event
+     */
+    200: Array<DispatchJobResponse>;
+};
+export type GetApiAdminDispatchJobsByEventByEventIdResponse = GetApiAdminDispatchJobsByEventByEventIdResponses[keyof GetApiAdminDispatchJobsByEventByEventIdResponses];
+export type GetApiAdminDispatchJobsFilterOptionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/dispatch-jobs/filter-options';
+};
+export type GetApiAdminDispatchJobsFilterOptionsResponses = {
+    /**
+     * Filter options
+     */
+    200: DispatchJobFilterOptionsResponse;
+};
+export type GetApiAdminDispatchJobsFilterOptionsResponse = GetApiAdminDispatchJobsFilterOptionsResponses[keyof GetApiAdminDispatchJobsFilterOptionsResponses];
+export type GetApiAdminDispatchJobsRawData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Result size. Default 50, capped at 1000.
+         */
+        size?: number;
+    };
+    url: '/api/dispatch-jobs/raw';
+};
+export type GetApiAdminDispatchJobsRawResponses = {
+    /**
+     * Raw dispatch jobs
+     */
+    200: Array<DispatchJobResponse>;
+};
+export type GetApiAdminDispatchJobsRawResponse = GetApiAdminDispatchJobsRawResponses[keyof GetApiAdminDispatchJobsRawResponses];
+export type GetApiAdminDispatchJobsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Dispatch job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/dispatch-jobs/{id}';
+};
+export type GetApiAdminDispatchJobsByIdErrors = {
+    /**
+     * Dispatch job not found
+     */
+    404: unknown;
+};
+export type GetApiAdminDispatchJobsByIdResponses = {
+    /**
+     * Dispatch job found
+     */
+    200: DispatchJobResponse;
+};
+export type GetApiAdminDispatchJobsByIdResponse = GetApiAdminDispatchJobsByIdResponses[keyof GetApiAdminDispatchJobsByIdResponses];
+export type GetApiAdminDispatchJobsByIdAttemptsData = {
+    body?: never;
+    path: {
+        /**
+         * Dispatch job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/dispatch-jobs/{id}/attempts';
+};
+export type GetApiAdminDispatchJobsByIdAttemptsErrors = {
+    /**
+     * Dispatch job not found
+     */
+    404: unknown;
+};
+export type GetApiAdminDispatchJobsByIdAttemptsResponses = {
+    /**
+     * Attempts list returned
+     */
+    200: Array<DispatchAttemptResponse>;
+};
+export type GetApiAdminDispatchJobsByIdAttemptsResponse = GetApiAdminDispatchJobsByIdAttemptsResponses[keyof GetApiAdminDispatchJobsByIdAttemptsResponses];
+export type GetApiAdminDispatchJobsByIdRawData = {
+    body?: never;
+    path: {
+        /**
+         * Dispatch job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/dispatch-jobs/{id}/raw';
+};
+export type GetApiAdminDispatchJobsByIdRawErrors = {
+    /**
+     * Dispatch job not found
+     */
+    404: unknown;
+};
+export type GetApiAdminDispatchJobsByIdRawResponses = {
+    /**
+     * Raw dispatch job data
+     */
+    200: unknown;
+};
+export type GetApiAdminEventTypesData = {
+    body?: never;
+    path?: never;
+    query: {
+        pagination: PaginationParams;
+        /**
+         * Filter by application
+         */
+        application?: string;
+        /**
+         * Filter by client ID
+         */
+        clientId?: string;
+        /**
+         * Filter by status
+         */
+        status?: string;
+    };
+    url: '/api/event-types';
+};
+export type GetApiAdminEventTypesResponses = {
+    /**
+     * List of event types
+     */
+    200: EventTypeListResponse;
+};
+export type GetApiAdminEventTypesResponse = GetApiAdminEventTypesResponses[keyof GetApiAdminEventTypesResponses];
+export type PostApiAdminEventTypesData = {
+    body: CreateEventTypeRequest;
+    path?: never;
+    query?: never;
+    url: '/api/event-types';
+};
+export type PostApiAdminEventTypesErrors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * Duplicate code
+     */
+    409: unknown;
+};
+export type PostApiAdminEventTypesResponses = {
+    /**
+     * Event type created
+     */
+    201: CreatedResponse;
+};
+export type PostApiAdminEventTypesResponse = PostApiAdminEventTypesResponses[keyof PostApiAdminEventTypesResponses];
+export type GetApiAdminEventTypesByCodeByCodeData = {
+    body?: never;
+    path: {
+        /**
+         * Event type code
+         */
+        code: string;
+    };
+    query?: never;
+    url: '/api/event-types/by-code/{code}';
+};
+export type GetApiAdminEventTypesByCodeByCodeErrors = {
+    /**
+     * Event type not found
+     */
+    404: unknown;
+};
+export type GetApiAdminEventTypesByCodeByCodeResponses = {
+    /**
+     * Event type found
+     */
+    200: EventTypeResponse;
+};
+export type GetApiAdminEventTypesByCodeByCodeResponse = GetApiAdminEventTypesByCodeByCodeResponses[keyof GetApiAdminEventTypesByCodeByCodeResponses];
+export type PostApiAdminEventTypesSyncData = {
+    body: SyncEventTypesRequest;
+    path?: never;
+    query?: {
+        /**
+         * Remove items not in the sync list
+         */
+        removeUnlisted?: boolean;
+    };
+    url: '/api/event-types/sync';
+};
+export type PostApiAdminEventTypesSyncErrors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * Application not found
+     */
+    404: unknown;
+};
+export type PostApiAdminEventTypesSyncResponses = {
+    /**
+     * Event types synced
+     */
+    200: SyncResultResponse;
+};
+export type PostApiAdminEventTypesSyncResponse = PostApiAdminEventTypesSyncResponses[keyof PostApiAdminEventTypesSyncResponses];
+export type DeleteApiAdminEventTypesByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Event type ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/event-types/{id}';
+};
+export type DeleteApiAdminEventTypesByIdErrors = {
+    /**
+     * Event type not found
+     */
+    404: unknown;
+};
+export type DeleteApiAdminEventTypesByIdResponses = {
+    /**
+     * Event type archived
+     */
+    204: void;
+};
+export type DeleteApiAdminEventTypesByIdResponse = DeleteApiAdminEventTypesByIdResponses[keyof DeleteApiAdminEventTypesByIdResponses];
+export type GetApiAdminEventTypesByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Event type ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/event-types/{id}';
+};
+export type GetApiAdminEventTypesByIdErrors = {
+    /**
+     * Event type not found
+     */
+    404: unknown;
+};
+export type GetApiAdminEventTypesByIdResponses = {
+    /**
+     * Event type found
+     */
+    200: EventTypeResponse;
+};
+export type GetApiAdminEventTypesByIdResponse = GetApiAdminEventTypesByIdResponses[keyof GetApiAdminEventTypesByIdResponses];
+export type PutApiAdminEventTypesByIdData = {
+    body: UpdateEventTypeRequest;
+    path: {
+        /**
+         * Event type ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/event-types/{id}';
+};
+export type PutApiAdminEventTypesByIdErrors = {
+    /**
+     * Event type not found
+     */
+    404: unknown;
+};
+export type PutApiAdminEventTypesByIdResponses = {
+    /**
+     * Event type updated
+     */
+    204: void;
+};
+export type PutApiAdminEventTypesByIdResponse = PutApiAdminEventTypesByIdResponses[keyof PutApiAdminEventTypesByIdResponses];
+export type PostApiAdminEventTypesByIdSchemasData = {
+    body: AddSchemaVersionRequest;
+    path: {
+        /**
+         * Event type ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/event-types/{id}/versions';
+};
+export type PostApiAdminEventTypesByIdSchemasErrors = {
+    /**
+     * Event type not found
+     */
+    404: unknown;
+};
+export type PostApiAdminEventTypesByIdSchemasResponses = {
+    /**
+     * Schema version added
+     */
+    200: EventTypeResponse;
+};
+export type PostApiAdminEventTypesByIdSchemasResponse = PostApiAdminEventTypesByIdSchemasResponses[keyof PostApiAdminEventTypesByIdSchemasResponses];
+export type GetApiAdminEventsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Result size. Default 50, capped at 1000.
+         */
+        size?: number;
+        /**
+         * Filter by client IDs (comma-separated)
+         */
+        clientIds?: string;
+        /**
+         * Filter by event types (comma-separated)
+         */
+        types?: string;
+        /**
+         * Filter by application codes (comma-separated)
+         */
+        applications?: string;
+        /**
+         * Filter by subdomains (comma-separated)
+         */
+        subdomains?: string;
+        /**
+         * Filter by aggregates (comma-separated)
+         */
+        aggregates?: string;
+        /**
+         * Filter by correlation ID
+         */
+        correlationId?: string;
+        /**
+         * Free-text search across type, source, subject
+         */
+        source?: string;
+    };
+    url: '/api/events';
+};
+export type GetApiAdminEventsResponses = {
+    /**
+     * List of events
+     */
+    200: Array<EventRead>;
+};
+export type GetApiAdminEventsResponse = GetApiAdminEventsResponses[keyof GetApiAdminEventsResponses];
+export type PostApiAdminEventsData = {
+    body: CreateEventRequest;
+    path?: never;
+    query?: never;
+    url: '/api/events';
+};
+export type PostApiAdminEventsErrors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * No access to client
+     */
+    403: unknown;
+};
+export type PostApiAdminEventsResponses = {
+    /**
+     * Event already exists (idempotent)
+     */
+    200: CreateEventResponse;
+    /**
+     * Event created
+     */
+    201: CreateEventResponse;
+};
+export type PostApiAdminEventsResponse = PostApiAdminEventsResponses[keyof PostApiAdminEventsResponses];
+export type GetApiAdminEventsFilterOptionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/events/filter-options';
+};
+export type GetApiAdminEventsFilterOptionsResponses = {
+    200: EventFilterOptions;
+};
+export type GetApiAdminEventsFilterOptionsResponse = GetApiAdminEventsFilterOptionsResponses[keyof GetApiAdminEventsFilterOptionsResponses];
+export type GetApiAdminEventsRawData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Result size. Default 50, capped at 1000.
+         */
+        size?: number;
+    };
+    url: '/api/events/raw';
+};
+export type GetApiAdminEventsRawResponses = {
+    /**
+     * Raw events
+     */
+    200: Array<EventSummaryResponse>;
+};
+export type GetApiAdminEventsRawResponse = GetApiAdminEventsRawResponses[keyof GetApiAdminEventsRawResponses];
+export type GetApiAdminEventsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Event ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/events/{id}';
+};
+export type GetApiAdminEventsByIdErrors = {
+    /**
+     * Event not found
+     */
+    404: unknown;
+};
+export type GetApiAdminEventsByIdResponses = {
+    /**
+     * Event found
+     */
+    200: EventResponse;
+};
+export type GetApiAdminEventsByIdResponse = GetApiAdminEventsByIdResponses[keyof GetApiAdminEventsByIdResponses];
+export type GetApiAdminMonitoringCircuitBreakersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/monitoring/circuit-breakers';
+};
+export type GetApiAdminMonitoringCircuitBreakersResponses = {
+    /**
+     * Circuit breaker states
+     */
+    200: CircuitBreakersResponse;
+};
+export type GetApiAdminMonitoringCircuitBreakersResponse = GetApiAdminMonitoringCircuitBreakersResponses[keyof GetApiAdminMonitoringCircuitBreakersResponses];
+export type GetApiAdminMonitoringDashboardData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/monitoring/dashboard';
+};
+export type GetApiAdminMonitoringDashboardResponses = {
+    /**
+     * Dashboard metrics
+     */
+    200: DashboardMetrics;
+};
+export type GetApiAdminMonitoringDashboardResponse = GetApiAdminMonitoringDashboardResponses[keyof GetApiAdminMonitoringDashboardResponses];
+export type GetApiAdminMonitoringInFlightMessagesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/monitoring/in-flight-messages';
+};
+export type GetApiAdminMonitoringInFlightMessagesResponses = {
+    /**
+     * In-flight messages
+     */
+    200: InFlightMessagesResponse;
+};
+export type GetApiAdminMonitoringInFlightMessagesResponse = GetApiAdminMonitoringInFlightMessagesResponses[keyof GetApiAdminMonitoringInFlightMessagesResponses];
+export type GetApiAdminMonitoringPoolStatsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/monitoring/pool-stats';
+};
+export type GetApiAdminMonitoringPoolStatsResponses = {
+    /**
+     * Pool statistics with enhanced metrics
+     */
+    200: PoolStatsResponse;
+};
+export type GetApiAdminMonitoringPoolStatsResponse = GetApiAdminMonitoringPoolStatsResponses[keyof GetApiAdminMonitoringPoolStatsResponses];
+export type GetApiAdminMonitoringStandbyStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/monitoring/standby-status';
+};
+export type GetApiAdminMonitoringStandbyStatusResponses = {
+    /**
+     * Standby status
+     */
+    200: StandbyStatus;
+};
+export type GetApiAdminMonitoringStandbyStatusResponse = GetApiAdminMonitoringStandbyStatusResponses[keyof GetApiAdminMonitoringStandbyStatusResponses];
+export type GetApiAdminOauthClientsData = {
+    body?: never;
+    path?: never;
+    query: {
+        pagination: PaginationParams;
+        /**
+         * Filter by active status
+         */
+        active?: boolean;
+    };
+    url: '/api/oauth-clients';
+};
+export type GetApiAdminOauthClientsResponses = {
+    /**
+     * List of OAuth clients
+     */
+    200: OAuthClientListResponse;
+};
+export type GetApiAdminOauthClientsResponse = GetApiAdminOauthClientsResponses[keyof GetApiAdminOauthClientsResponses];
+export type PostApiAdminOauthClientsData = {
+    body: CreateOAuthClientRequest;
+    path?: never;
+    query?: never;
+    url: '/api/oauth-clients';
+};
+export type PostApiAdminOauthClientsErrors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * Duplicate client_id
+     */
+    409: unknown;
+};
+export type PostApiAdminOauthClientsResponses = {
+    /**
+     * OAuth client created
+     */
+    201: CreateOAuthClientResponse;
+};
+export type PostApiAdminOauthClientsResponse = PostApiAdminOauthClientsResponses[keyof PostApiAdminOauthClientsResponses];
+export type GetApiAdminOauthClientsByClientIdData = {
+    body?: never;
+    path: {
+        /**
+         * OAuth client_id (public identifier)
+         */
+        clientId: string;
+    };
+    query?: never;
+    url: '/api/oauth-clients/by-client-id/{clientId}';
+};
+export type GetApiAdminOauthClientsByClientIdErrors = {
+    /**
+     * OAuth client not found
+     */
+    404: unknown;
+};
+export type GetApiAdminOauthClientsByClientIdResponses = {
+    /**
+     * OAuth client found
+     */
+    200: OAuthClientResponse;
+};
+export type GetApiAdminOauthClientsByClientIdResponse = GetApiAdminOauthClientsByClientIdResponses[keyof GetApiAdminOauthClientsByClientIdResponses];
+export type DeleteApiAdminOauthClientsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * OAuth client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/oauth-clients/{id}';
+};
+export type DeleteApiAdminOauthClientsByIdErrors = {
+    /**
+     * OAuth client not found
+     */
+    404: unknown;
+};
+export type DeleteApiAdminOauthClientsByIdResponses = {
+    /**
+     * OAuth client deleted
+     */
+    204: void;
+};
+export type DeleteApiAdminOauthClientsByIdResponse = DeleteApiAdminOauthClientsByIdResponses[keyof DeleteApiAdminOauthClientsByIdResponses];
+export type GetApiAdminOauthClientsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * OAuth client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/oauth-clients/{id}';
+};
+export type GetApiAdminOauthClientsByIdErrors = {
+    /**
+     * OAuth client not found
+     */
+    404: unknown;
+};
+export type GetApiAdminOauthClientsByIdResponses = {
+    /**
+     * OAuth client found
+     */
+    200: OAuthClientResponse;
+};
+export type GetApiAdminOauthClientsByIdResponse = GetApiAdminOauthClientsByIdResponses[keyof GetApiAdminOauthClientsByIdResponses];
+export type PutApiAdminOauthClientsByIdData = {
+    body: UpdateOAuthClientRequest;
+    path: {
+        /**
+         * OAuth client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/oauth-clients/{id}';
+};
+export type PutApiAdminOauthClientsByIdErrors = {
+    /**
+     * OAuth client not found
+     */
+    404: unknown;
+};
+export type PutApiAdminOauthClientsByIdResponses = {
+    /**
+     * OAuth client updated
+     */
+    204: void;
+};
+export type PutApiAdminOauthClientsByIdResponse = PutApiAdminOauthClientsByIdResponses[keyof PutApiAdminOauthClientsByIdResponses];
+export type PostApiAdminOauthClientsActivateData = {
+    body?: never;
+    path: {
+        /**
+         * OAuth client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/oauth-clients/{id}/activate';
+};
+export type PostApiAdminOauthClientsActivateErrors = {
+    /**
+     * OAuth client not found
+     */
+    404: unknown;
+};
+export type PostApiAdminOauthClientsActivateResponses = {
+    /**
+     * OAuth client activated
+     */
+    200: SuccessResponse;
+};
+export type PostApiAdminOauthClientsActivateResponse = PostApiAdminOauthClientsActivateResponses[keyof PostApiAdminOauthClientsActivateResponses];
+export type PostApiAdminOauthClientsDeactivateData = {
+    body?: never;
+    path: {
+        /**
+         * OAuth client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/oauth-clients/{id}/deactivate';
+};
+export type PostApiAdminOauthClientsDeactivateErrors = {
+    /**
+     * OAuth client not found
+     */
+    404: unknown;
+};
+export type PostApiAdminOauthClientsDeactivateResponses = {
+    /**
+     * OAuth client deactivated
+     */
+    200: SuccessResponse;
+};
+export type PostApiAdminOauthClientsDeactivateResponse = PostApiAdminOauthClientsDeactivateResponses[keyof PostApiAdminOauthClientsDeactivateResponses];
+export type PostApiAdminOauthClientsRegenerateSecretData = {
+    body?: never;
+    path: {
+        /**
+         * OAuth client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/oauth-clients/{id}/regenerate-secret';
+};
+export type PostApiAdminOauthClientsRegenerateSecretErrors = {
+    /**
+     * OAuth client not found
+     */
+    404: unknown;
+};
+export type PostApiAdminOauthClientsRegenerateSecretResponses = {
+    /**
+     * New client secret generated
+     */
+    200: RegenerateSecretResponse;
+};
+export type PostApiAdminOauthClientsRegenerateSecretResponse = PostApiAdminOauthClientsRegenerateSecretResponses[keyof PostApiAdminOauthClientsRegenerateSecretResponses];
+export type PostApiAdminOauthClientsRotateSecretData = {
+    body?: never;
+    path: {
+        /**
+         * OAuth client ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/oauth-clients/{id}/rotate-secret';
+};
+export type PostApiAdminOauthClientsRotateSecretErrors = {
+    /**
+     * OAuth client not found
+     */
+    404: unknown;
+};
+export type PostApiAdminOauthClientsRotateSecretResponses = {
+    /**
+     * New client secret generated
+     */
+    200: RegenerateSecretResponse;
+};
+export type PostApiAdminOauthClientsRotateSecretResponse = PostApiAdminOauthClientsRotateSecretResponses[keyof PostApiAdminOauthClientsRotateSecretResponses];
+export type GetApiAdminPrincipalsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number
+         */
+        page?: number;
+        /**
+         * Items per page
+         */
+        limit?: number;
+        /**
+         * Filter by type
+         */
+        type?: string;
+        /**
+         * Filter by scope
+         */
+        scope?: string;
+        /**
+         * Filter by client ID
+         */
+        client_id?: string;
+        /**
+         * Exact email match (case-insensitive)
+         */
+        email?: string;
+        /**
+         * Search by name or email (substring)
+         */
+        q?: string;
+        /**
+         * Filter by active status
+         */
+        active?: boolean;
+        /**
+         * Filter by roles (comma-separated)
+         */
+        roles?: string;
+    };
+    url: '/api/principals';
+};
+export type GetApiAdminPrincipalsResponses = {
+    /**
+     * List of principals
+     */
+    200: PrincipalListResponse;
+};
+export type GetApiAdminPrincipalsResponse = GetApiAdminPrincipalsResponses[keyof GetApiAdminPrincipalsResponses];
+export type GetApiAdminPrincipalsCheckEmailDomainData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Email domain to check
+         */
+        domain: string;
+    };
+    url: '/api/principals/check-email-domain';
+};
+export type GetApiAdminPrincipalsCheckEmailDomainResponses = {
+    /**
+     * Domain check result
+     */
+    200: CheckEmailDomainResponse;
+};
+export type GetApiAdminPrincipalsCheckEmailDomainResponse = GetApiAdminPrincipalsCheckEmailDomainResponses[keyof GetApiAdminPrincipalsCheckEmailDomainResponses];
+export type PostApiAdminPrincipalsUsersData = {
+    body: CreateUserRequest;
+    path?: never;
+    query?: never;
+    url: '/api/principals/users';
+};
+export type PostApiAdminPrincipalsUsersErrors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * Duplicate email
+     */
+    409: unknown;
+};
+export type PostApiAdminPrincipalsUsersResponses = {
+    /**
+     * User created
+     */
+    201: PrincipalResponse;
+};
+export type PostApiAdminPrincipalsUsersResponse = PostApiAdminPrincipalsUsersResponses[keyof PostApiAdminPrincipalsUsersResponses];
+export type DeleteApiAdminPrincipalsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}';
+};
+export type DeleteApiAdminPrincipalsByIdErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type DeleteApiAdminPrincipalsByIdResponses = {
+    /**
+     * Principal deleted
+     */
+    204: void;
+};
+export type DeleteApiAdminPrincipalsByIdResponse = DeleteApiAdminPrincipalsByIdResponses[keyof DeleteApiAdminPrincipalsByIdResponses];
+export type GetApiAdminPrincipalsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}';
+};
+export type GetApiAdminPrincipalsByIdErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type GetApiAdminPrincipalsByIdResponses = {
+    /**
+     * Principal found
+     */
+    200: PrincipalResponse;
+};
+export type GetApiAdminPrincipalsByIdResponse = GetApiAdminPrincipalsByIdResponses[keyof GetApiAdminPrincipalsByIdResponses];
+export type PutApiAdminPrincipalsByIdData = {
+    body: UpdatePrincipalRequest;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}';
+};
+export type PutApiAdminPrincipalsByIdErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type PutApiAdminPrincipalsByIdResponses = {
+    /**
+     * Principal updated
+     */
+    200: PrincipalResponse;
+};
+export type PutApiAdminPrincipalsByIdResponse = PutApiAdminPrincipalsByIdResponses[keyof PutApiAdminPrincipalsByIdResponses];
+export type PostApiAdminPrincipalsByIdActivateData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/activate';
+};
+export type PostApiAdminPrincipalsByIdActivateErrors = {
+    /**
+     * Insufficient permissions
+     */
+    403: unknown;
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type PostApiAdminPrincipalsByIdActivateResponses = {
+    /**
+     * Principal activated
+     */
+    200: StatusChangeResponse;
+};
+export type PostApiAdminPrincipalsByIdActivateResponse = PostApiAdminPrincipalsByIdActivateResponses[keyof PostApiAdminPrincipalsByIdActivateResponses];
+export type GetApiAdminPrincipalsByIdApplicationAccessData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/application-access';
+};
+export type GetApiAdminPrincipalsByIdApplicationAccessErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type GetApiAdminPrincipalsByIdApplicationAccessResponses = {
+    /**
+     * Application access list
+     */
+    200: ApplicationAccessListResponse;
+};
+export type GetApiAdminPrincipalsByIdApplicationAccessResponse = GetApiAdminPrincipalsByIdApplicationAccessResponses[keyof GetApiAdminPrincipalsByIdApplicationAccessResponses];
+export type PutApiAdminPrincipalsByIdApplicationAccessData = {
+    body: SetApplicationAccessRequest;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/application-access';
+};
+export type PutApiAdminPrincipalsByIdApplicationAccessErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type PutApiAdminPrincipalsByIdApplicationAccessResponses = {
+    /**
+     * Application access updated
+     */
+    200: SetApplicationAccessResponse;
+};
+export type PutApiAdminPrincipalsByIdApplicationAccessResponse = PutApiAdminPrincipalsByIdApplicationAccessResponses[keyof PutApiAdminPrincipalsByIdApplicationAccessResponses];
+export type GetApiAdminPrincipalsByIdAvailableApplicationsData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/available-applications';
+};
+export type GetApiAdminPrincipalsByIdAvailableApplicationsErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type GetApiAdminPrincipalsByIdAvailableApplicationsResponses = {
+    /**
+     * Available applications
+     */
+    200: AvailableApplicationsResponse;
+};
+export type GetApiAdminPrincipalsByIdAvailableApplicationsResponse = GetApiAdminPrincipalsByIdAvailableApplicationsResponses[keyof GetApiAdminPrincipalsByIdAvailableApplicationsResponses];
+export type GetApiAdminPrincipalsByIdClientAccessData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/client-access';
+};
+export type GetApiAdminPrincipalsByIdClientAccessErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type GetApiAdminPrincipalsByIdClientAccessResponses = {
+    /**
+     * Client access grants
+     */
+    200: ClientAccessListResponse;
+};
+export type GetApiAdminPrincipalsByIdClientAccessResponse = GetApiAdminPrincipalsByIdClientAccessResponses[keyof GetApiAdminPrincipalsByIdClientAccessResponses];
+export type PostApiAdminPrincipalsByIdClientAccessData = {
+    body: GrantClientAccessRequest;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/client-access';
+};
+export type PostApiAdminPrincipalsByIdClientAccessErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type PostApiAdminPrincipalsByIdClientAccessResponses = {
+    /**
+     * Client access granted
+     */
+    201: ClientAccessGrantResponse;
+};
+export type PostApiAdminPrincipalsByIdClientAccessResponse = PostApiAdminPrincipalsByIdClientAccessResponses[keyof PostApiAdminPrincipalsByIdClientAccessResponses];
+export type DeleteApiAdminPrincipalsByIdClientAccessByClientIdData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+        /**
+         * Client ID to revoke
+         */
+        client_id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/client-access/{client_id}';
+};
+export type DeleteApiAdminPrincipalsByIdClientAccessByClientIdErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type DeleteApiAdminPrincipalsByIdClientAccessByClientIdResponses = {
+    /**
+     * Client access revoked
+     */
+    204: void;
+};
+export type DeleteApiAdminPrincipalsByIdClientAccessByClientIdResponse = DeleteApiAdminPrincipalsByIdClientAccessByClientIdResponses[keyof DeleteApiAdminPrincipalsByIdClientAccessByClientIdResponses];
+export type PostApiAdminPrincipalsByIdDeactivateData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/deactivate';
+};
+export type PostApiAdminPrincipalsByIdDeactivateErrors = {
+    /**
+     * Insufficient permissions
+     */
+    403: unknown;
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type PostApiAdminPrincipalsByIdDeactivateResponses = {
+    /**
+     * Principal deactivated
+     */
+    200: StatusChangeResponse;
+};
+export type PostApiAdminPrincipalsByIdDeactivateResponse = PostApiAdminPrincipalsByIdDeactivateResponses[keyof PostApiAdminPrincipalsByIdDeactivateResponses];
+export type PostApiAdminPrincipalsByIdResetPasswordData = {
+    body: ResetPasswordRequest;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/reset-password';
+};
+export type PostApiAdminPrincipalsByIdResetPasswordErrors = {
+    /**
+     * User is not internal auth or invalid password
+     */
+    400: unknown;
+    /**
+     * Insufficient permissions
+     */
+    403: unknown;
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type PostApiAdminPrincipalsByIdResetPasswordResponses = {
+    /**
+     * Password reset
+     */
+    200: StatusChangeResponse;
+};
+export type PostApiAdminPrincipalsByIdResetPasswordResponse = PostApiAdminPrincipalsByIdResetPasswordResponses[keyof PostApiAdminPrincipalsByIdResetPasswordResponses];
+export type GetApiAdminPrincipalsByIdRolesData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/roles';
+};
+export type GetApiAdminPrincipalsByIdRolesErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type GetApiAdminPrincipalsByIdRolesResponses = {
+    /**
+     * List of roles
+     */
+    200: RolesListResponse;
+};
+export type GetApiAdminPrincipalsByIdRolesResponse = GetApiAdminPrincipalsByIdRolesResponses[keyof GetApiAdminPrincipalsByIdRolesResponses];
+export type PostApiAdminPrincipalsByIdRolesData = {
+    body: AssignRoleRequest;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/roles';
+};
+export type PostApiAdminPrincipalsByIdRolesErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type PostApiAdminPrincipalsByIdRolesResponses = {
+    /**
+     * Role assigned
+     */
+    200: PrincipalResponse;
+};
+export type PostApiAdminPrincipalsByIdRolesResponse = PostApiAdminPrincipalsByIdRolesResponses[keyof PostApiAdminPrincipalsByIdRolesResponses];
+export type PutApiAdminPrincipalsByIdRolesData = {
+    body: BatchAssignRolesRequest;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/roles';
+};
+export type PutApiAdminPrincipalsByIdRolesErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type PutApiAdminPrincipalsByIdRolesResponses = {
+    /**
+     * Roles updated
+     */
+    200: BatchAssignRolesResponse;
+};
+export type PutApiAdminPrincipalsByIdRolesResponse = PutApiAdminPrincipalsByIdRolesResponses[keyof PutApiAdminPrincipalsByIdRolesResponses];
+export type DeleteApiAdminPrincipalsByIdRolesByRoleNameData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+        /**
+         * Role to remove
+         */
+        role: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/roles/{role}';
+};
+export type DeleteApiAdminPrincipalsByIdRolesByRoleNameErrors = {
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type DeleteApiAdminPrincipalsByIdRolesByRoleNameResponses = {
+    /**
+     * Role removed
+     */
+    200: PrincipalResponse;
+};
+export type DeleteApiAdminPrincipalsByIdRolesByRoleNameResponse = DeleteApiAdminPrincipalsByIdRolesByRoleNameResponses[keyof DeleteApiAdminPrincipalsByIdRolesByRoleNameResponses];
+export type PostApiAdminPrincipalsByIdSendPasswordResetData = {
+    body?: never;
+    path: {
+        /**
+         * Principal ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/principals/{id}/send-password-reset';
+};
+export type PostApiAdminPrincipalsByIdSendPasswordResetErrors = {
+    /**
+     * User is not eligible (OIDC, service account, or no email)
+     */
+    400: unknown;
+    /**
+     * Insufficient permissions
+     */
+    403: unknown;
+    /**
+     * Principal not found
+     */
+    404: unknown;
+};
+export type PostApiAdminPrincipalsByIdSendPasswordResetResponses = {
+    /**
+     * Reset email queued
+     */
+    200: StatusChangeResponse;
+};
+export type PostApiAdminPrincipalsByIdSendPasswordResetResponse = PostApiAdminPrincipalsByIdSendPasswordResetResponses[keyof PostApiAdminPrincipalsByIdSendPasswordResetResponses];
+export type GetApiAdminRolesData = {
+    body?: never;
+    path?: never;
+    query: {
+        pagination: PaginationParams;
+        /**
+         * Filter by application code
+         */
+        applicationCode?: string;
+        /**
+         * Filter by source
+         */
+        source?: string;
+        /**
+         * Filter client-managed roles only
+         */
+        clientManaged?: boolean;
+    };
+    url: '/api/roles';
+};
+export type GetApiAdminRolesResponses = {
+    /**
+     * List of roles
+     */
+    200: RoleListResponse;
+};
+export type GetApiAdminRolesResponse = GetApiAdminRolesResponses[keyof GetApiAdminRolesResponses];
+export type PostApiAdminRolesData = {
+    body: CreateRoleRequest;
+    path?: never;
+    query?: never;
+    url: '/api/roles';
+};
+export type PostApiAdminRolesErrors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * Duplicate role code
+     */
+    409: unknown;
+};
+export type PostApiAdminRolesResponses = {
+    /**
+     * Role created
+     */
+    201: CreatedResponse;
+};
+export type PostApiAdminRolesResponse = PostApiAdminRolesResponses[keyof PostApiAdminRolesResponses];
+export type GetApiAdminRolesByApplicationByApplicationIdData = {
+    body?: never;
+    path: {
+        /**
+         * Application ID
+         */
+        application_id: string;
+    };
+    query?: never;
+    url: '/api/roles/by-application/{application_id}';
+};
+export type GetApiAdminRolesByApplicationByApplicationIdResponses = {
+    /**
+     * Roles filtered by application ID
+     */
+    200: Array<RoleResponse>;
+};
+export type GetApiAdminRolesByApplicationByApplicationIdResponse = GetApiAdminRolesByApplicationByApplicationIdResponses[keyof GetApiAdminRolesByApplicationByApplicationIdResponses];
+export type GetApiAdminRolesByCodeByCodeData = {
+    body?: never;
+    path: {
+        /**
+         * Role code
+         */
+        code: string;
+    };
+    query?: never;
+    url: '/api/roles/by-code/{code}';
+};
+export type GetApiAdminRolesByCodeByCodeErrors = {
+    /**
+     * Role not found
+     */
+    404: unknown;
+};
+export type GetApiAdminRolesByCodeByCodeResponses = {
+    /**
+     * Role found
+     */
+    200: RoleResponse;
+};
+export type GetApiAdminRolesByCodeByCodeResponse = GetApiAdminRolesByCodeByCodeResponses[keyof GetApiAdminRolesByCodeByCodeResponses];
+export type GetApiAdminRolesBySourceBySourceData = {
+    body?: never;
+    path: {
+        /**
+         * Role source (CODE, DATABASE, SDK)
+         */
+        source: string;
+    };
+    query?: never;
+    url: '/api/roles/by-source/{source}';
+};
+export type GetApiAdminRolesBySourceBySourceErrors = {
+    /**
+     * Invalid source
+     */
+    400: unknown;
+};
+export type GetApiAdminRolesBySourceBySourceResponses = {
+    /**
+     * Roles filtered by source
+     */
+    200: Array<RoleResponse>;
+};
+export type GetApiAdminRolesBySourceBySourceResponse = GetApiAdminRolesBySourceBySourceResponses[keyof GetApiAdminRolesBySourceBySourceResponses];
+export type GetApiAdminRolesFiltersApplicationsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/roles/filters/applications';
+};
+export type GetApiAdminRolesFiltersApplicationsResponses = {
+    /**
+     * Application options
+     */
+    200: ApplicationOptionsResponse;
+};
+export type GetApiAdminRolesFiltersApplicationsResponse = GetApiAdminRolesFiltersApplicationsResponses[keyof GetApiAdminRolesFiltersApplicationsResponses];
+export type GetApiAdminRolesPermissionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/roles/permissions';
+};
+export type GetApiAdminRolesPermissionsResponses = {
+    /**
+     * List of permissions
+     */
+    200: PermissionListResponse;
+};
+export type GetApiAdminRolesPermissionsResponse = GetApiAdminRolesPermissionsResponses[keyof GetApiAdminRolesPermissionsResponses];
+export type GetApiAdminRolesPermissionsByPermissionData = {
+    body?: never;
+    path: {
+        /**
+         * Permission string
+         */
+        permission: string;
+    };
+    query?: never;
+    url: '/api/roles/permissions/{permission}';
+};
+export type GetApiAdminRolesPermissionsByPermissionErrors = {
+    /**
+     * Permission not found
+     */
+    404: unknown;
+};
+export type GetApiAdminRolesPermissionsByPermissionResponses = {
+    /**
+     * Permission found
+     */
+    200: PermissionResponse;
+};
+export type GetApiAdminRolesPermissionsByPermissionResponse = GetApiAdminRolesPermissionsByPermissionResponses[keyof GetApiAdminRolesPermissionsByPermissionResponses];
+export type DeleteApiAdminRolesByNameData = {
+    body?: never;
+    path: {
+        /**
+         * Role name (code) or ID
+         */
+        role_name: string;
+    };
+    query?: never;
+    url: '/api/roles/{role_name}';
+};
+export type DeleteApiAdminRolesByNameErrors = {
+    /**
+     * Role not found
+     */
+    404: unknown;
+};
+export type DeleteApiAdminRolesByNameResponses = {
+    /**
+     * Role deleted
+     */
+    204: void;
+};
+export type DeleteApiAdminRolesByNameResponse = DeleteApiAdminRolesByNameResponses[keyof DeleteApiAdminRolesByNameResponses];
+export type GetApiAdminRolesByNameData = {
+    body?: never;
+    path: {
+        /**
+         * Role name (code) or ID
+         */
+        role_name: string;
+    };
+    query?: never;
+    url: '/api/roles/{role_name}';
+};
+export type GetApiAdminRolesByNameErrors = {
+    /**
+     * Role not found
+     */
+    404: unknown;
+};
+export type GetApiAdminRolesByNameResponses = {
+    /**
+     * Role found
+     */
+    200: RoleResponse;
+};
+export type GetApiAdminRolesByNameResponse = GetApiAdminRolesByNameResponses[keyof GetApiAdminRolesByNameResponses];
+export type PutApiAdminRolesByNameData = {
+    body: UpdateRoleRequest;
+    path: {
+        /**
+         * Role name (code) or ID
+         */
+        role_name: string;
+    };
+    query?: never;
+    url: '/api/roles/{role_name}';
+};
+export type PutApiAdminRolesByNameErrors = {
+    /**
+     * Role not found
+     */
+    404: unknown;
+};
+export type PutApiAdminRolesByNameResponses = {
+    /**
+     * Role updated
+     */
+    204: void;
+};
+export type PutApiAdminRolesByNameResponse = PutApiAdminRolesByNameResponses[keyof PutApiAdminRolesByNameResponses];
+export type PostApiAdminRolesByNamePermissionsData = {
+    body: GrantPermissionRequest;
+    path: {
+        /**
+         * Role name (code) or ID
+         */
+        role_name: string;
+    };
+    query?: never;
+    url: '/api/roles/{role_name}/permissions';
+};
+export type PostApiAdminRolesByNamePermissionsErrors = {
+    /**
+     * Role not found
+     */
+    404: unknown;
+};
+export type PostApiAdminRolesByNamePermissionsResponses = {
+    /**
+     * Permission granted
+     */
+    200: RoleResponse;
+};
+export type PostApiAdminRolesByNamePermissionsResponse = PostApiAdminRolesByNamePermissionsResponses[keyof PostApiAdminRolesByNamePermissionsResponses];
+export type DeleteApiAdminRolesByNamePermissionsByPermissionData = {
+    body?: never;
+    path: {
+        /**
+         * Role name (code) or ID
+         */
+        role_name: string;
+        /**
+         * Permission to revoke
+         */
+        permission: string;
+    };
+    query?: never;
+    url: '/api/roles/{role_name}/permissions/{permission}';
+};
+export type DeleteApiAdminRolesByNamePermissionsByPermissionErrors = {
+    /**
+     * Role not found
+     */
+    404: unknown;
+};
+export type DeleteApiAdminRolesByNamePermissionsByPermissionResponses = {
+    /**
+     * Permission revoked
+     */
+    200: RoleResponse;
+};
+export type DeleteApiAdminRolesByNamePermissionsByPermissionResponse = DeleteApiAdminRolesByNamePermissionsByPermissionResponses[keyof DeleteApiAdminRolesByNamePermissionsByPermissionResponses];
+export type GetApiScheduledJobsData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Filter by client. Pass the literal `platform` to filter platform-scoped.
+         */
+        clientId?: string;
+        status?: string;
+        search?: string;
+        pagination: PaginationParams;
+    };
+    url: '/api/scheduled-jobs';
+};
+export type GetApiScheduledJobsResponses = {
+    200: PaginatedResponseScheduledJobResponse;
+};
+export type GetApiScheduledJobsResponse = GetApiScheduledJobsResponses[keyof GetApiScheduledJobsResponses];
+export type PostApiScheduledJobsData = {
+    body: CreateScheduledJobRequest;
+    path?: never;
+    query?: never;
+    url: '/api/scheduled-jobs';
+};
+export type PostApiScheduledJobsErrors = {
+    400: unknown;
+    403: unknown;
+    409: unknown;
+};
+export type PostApiScheduledJobsResponses = {
+    201: CreatedResponse;
+};
+export type PostApiScheduledJobsResponse = PostApiScheduledJobsResponses[keyof PostApiScheduledJobsResponses];
+export type GetApiScheduledJobsByCodeData = {
+    body?: never;
+    path: {
+        /**
+         * Scheduled job code
+         */
+        code: string;
+    };
+    query?: {
+        clientId?: string;
+    };
+    url: '/api/scheduled-jobs/by-code/{code}';
+};
+export type GetApiScheduledJobsByCodeErrors = {
+    404: unknown;
+};
+export type GetApiScheduledJobsByCodeResponses = {
+    200: ScheduledJobResponse;
+};
+export type GetApiScheduledJobsByCodeResponse = GetApiScheduledJobsByCodeResponses[keyof GetApiScheduledJobsByCodeResponses];
+export type GetApiScheduledJobsInstancesByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Instance ID
+         */
+        instance_id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/instances/{instance_id}';
+};
+export type GetApiScheduledJobsInstancesByIdErrors = {
+    404: unknown;
+};
+export type GetApiScheduledJobsInstancesByIdResponses = {
+    200: ScheduledJobInstanceResponse;
+};
+export type GetApiScheduledJobsInstancesByIdResponse = GetApiScheduledJobsInstancesByIdResponses[keyof GetApiScheduledJobsInstancesByIdResponses];
+export type PostApiScheduledJobsInstancesByIdCompleteData = {
+    body: InstanceCompleteRequest;
+    path: {
+        /**
+         * Instance ID
+         */
+        instance_id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/instances/{instance_id}/complete';
+};
+export type PostApiScheduledJobsInstancesByIdCompleteErrors = {
+    403: unknown;
+    404: unknown;
+};
+export type PostApiScheduledJobsInstancesByIdCompleteResponses = {
+    204: void;
+};
+export type PostApiScheduledJobsInstancesByIdCompleteResponse = PostApiScheduledJobsInstancesByIdCompleteResponses[keyof PostApiScheduledJobsInstancesByIdCompleteResponses];
+export type PostApiScheduledJobsInstancesByIdLogData = {
+    body: InstanceLogRequest;
+    path: {
+        /**
+         * Instance ID
+         */
+        instance_id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/instances/{instance_id}/log';
+};
+export type PostApiScheduledJobsInstancesByIdLogErrors = {
+    403: unknown;
+    404: unknown;
+};
+export type PostApiScheduledJobsInstancesByIdLogResponses = {
+    202: unknown;
+};
+export type GetApiScheduledJobsInstancesByIdLogsData = {
+    body?: never;
+    path: {
+        /**
+         * Instance ID
+         */
+        instance_id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/instances/{instance_id}/logs';
+};
+export type GetApiScheduledJobsInstancesByIdLogsErrors = {
+    404: unknown;
+};
+export type GetApiScheduledJobsInstancesByIdLogsResponses = {
+    200: Array<InstanceLogResponse>;
+};
+export type GetApiScheduledJobsInstancesByIdLogsResponse = GetApiScheduledJobsInstancesByIdLogsResponses[keyof GetApiScheduledJobsInstancesByIdLogsResponses];
+export type DeleteApiScheduledJobsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Scheduled job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/{id}';
+};
+export type DeleteApiScheduledJobsByIdErrors = {
+    404: unknown;
+};
+export type DeleteApiScheduledJobsByIdResponses = {
+    204: void;
+};
+export type DeleteApiScheduledJobsByIdResponse = DeleteApiScheduledJobsByIdResponses[keyof DeleteApiScheduledJobsByIdResponses];
+export type GetApiScheduledJobsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Scheduled job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/{id}';
+};
+export type GetApiScheduledJobsByIdErrors = {
+    404: unknown;
+};
+export type GetApiScheduledJobsByIdResponses = {
+    200: ScheduledJobResponse;
+};
+export type GetApiScheduledJobsByIdResponse = GetApiScheduledJobsByIdResponses[keyof GetApiScheduledJobsByIdResponses];
+export type PutApiScheduledJobsByIdData = {
+    body: UpdateScheduledJobRequest;
+    path: {
+        /**
+         * Scheduled job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/{id}';
+};
+export type PutApiScheduledJobsByIdErrors = {
+    404: unknown;
+};
+export type PutApiScheduledJobsByIdResponses = {
+    204: void;
+};
+export type PutApiScheduledJobsByIdResponse = PutApiScheduledJobsByIdResponses[keyof PutApiScheduledJobsByIdResponses];
+export type PostApiScheduledJobsByIdArchiveData = {
+    body?: never;
+    path: {
+        /**
+         * Scheduled job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/{id}/archive';
+};
+export type PostApiScheduledJobsByIdArchiveErrors = {
+    404: unknown;
+    409: unknown;
+};
+export type PostApiScheduledJobsByIdArchiveResponses = {
+    204: void;
+};
+export type PostApiScheduledJobsByIdArchiveResponse = PostApiScheduledJobsByIdArchiveResponses[keyof PostApiScheduledJobsByIdArchiveResponses];
+export type PostApiScheduledJobsByIdFireData = {
+    body: FireRequest;
+    path: {
+        /**
+         * Scheduled job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/{id}/fire';
+};
+export type PostApiScheduledJobsByIdFireErrors = {
+    404: unknown;
+    409: unknown;
+};
+export type PostApiScheduledJobsByIdFireResponses = {
+    202: CreatedResponse;
+};
+export type PostApiScheduledJobsByIdFireResponse = PostApiScheduledJobsByIdFireResponses[keyof PostApiScheduledJobsByIdFireResponses];
+export type GetApiScheduledJobsByIdInstancesData = {
+    body?: never;
+    path: {
+        /**
+         * Scheduled job ID
+         */
+        id: string;
+    };
+    query: {
+        status?: string;
+        triggerKind?: string;
+        from?: string;
+        to?: string;
+        pagination: PaginationParams;
+    };
+    url: '/api/scheduled-jobs/{id}/instances';
+};
+export type GetApiScheduledJobsByIdInstancesResponses = {
+    200: PaginatedResponseScheduledJobInstanceResponse;
+};
+export type GetApiScheduledJobsByIdInstancesResponse = GetApiScheduledJobsByIdInstancesResponses[keyof GetApiScheduledJobsByIdInstancesResponses];
+export type PostApiScheduledJobsByIdPauseData = {
+    body?: never;
+    path: {
+        /**
+         * Scheduled job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/{id}/pause';
+};
+export type PostApiScheduledJobsByIdPauseErrors = {
+    404: unknown;
+    409: unknown;
+};
+export type PostApiScheduledJobsByIdPauseResponses = {
+    204: void;
+};
+export type PostApiScheduledJobsByIdPauseResponse = PostApiScheduledJobsByIdPauseResponses[keyof PostApiScheduledJobsByIdPauseResponses];
+export type PostApiScheduledJobsByIdResumeData = {
+    body?: never;
+    path: {
+        /**
+         * Scheduled job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/scheduled-jobs/{id}/resume';
+};
+export type PostApiScheduledJobsByIdResumeErrors = {
+    404: unknown;
+    409: unknown;
+};
+export type PostApiScheduledJobsByIdResumeResponses = {
+    204: void;
+};
+export type PostApiScheduledJobsByIdResumeResponse = PostApiScheduledJobsByIdResumeResponses[keyof PostApiScheduledJobsByIdResumeResponses];
+export type GetApiAdminSubscriptionsData = {
+    body?: never;
+    path?: never;
+    query: {
+        pagination: PaginationParams;
+        /**
+         * Filter by client ID
+         */
+        clientId?: string;
+        /**
+         * Filter by status
+         */
+        status?: string;
+    };
+    url: '/api/subscriptions';
+};
+export type GetApiAdminSubscriptionsResponses = {
+    /**
+     * List of subscriptions
+     */
+    200: SubscriptionListResponse;
+};
+export type GetApiAdminSubscriptionsResponse = GetApiAdminSubscriptionsResponses[keyof GetApiAdminSubscriptionsResponses];
+export type PostApiAdminSubscriptionsData = {
+    body: CreateSubscriptionRequest;
+    path?: never;
+    query?: never;
+    url: '/api/subscriptions';
+};
+export type PostApiAdminSubscriptionsErrors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * Duplicate code
+     */
+    409: unknown;
+};
+export type PostApiAdminSubscriptionsResponses = {
+    /**
+     * Subscription created
+     */
+    201: CreatedResponse;
+};
+export type PostApiAdminSubscriptionsResponse = PostApiAdminSubscriptionsResponses[keyof PostApiAdminSubscriptionsResponses];
+export type PostApiAdminSubscriptionsSyncData = {
+    body: SyncSubscriptionsRequest;
+    path?: never;
+    query?: {
+        /**
+         * Remove items not in the sync list
+         */
+        removeUnlisted?: boolean;
+    };
+    url: '/api/subscriptions/sync';
+};
+export type PostApiAdminSubscriptionsSyncErrors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * Application or connection not found
+     */
+    404: unknown;
+};
+export type PostApiAdminSubscriptionsSyncResponses = {
+    /**
+     * Subscriptions synced
+     */
+    200: SyncResultResponse;
+};
+export type PostApiAdminSubscriptionsSyncResponse = PostApiAdminSubscriptionsSyncResponses[keyof PostApiAdminSubscriptionsSyncResponses];
+export type DeleteApiAdminSubscriptionsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Subscription ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/subscriptions/{id}';
+};
+export type DeleteApiAdminSubscriptionsByIdErrors = {
+    /**
+     * Subscription not found
+     */
+    404: unknown;
+};
+export type DeleteApiAdminSubscriptionsByIdResponses = {
+    /**
+     * Subscription deleted
+     */
+    204: void;
+};
+export type DeleteApiAdminSubscriptionsByIdResponse = DeleteApiAdminSubscriptionsByIdResponses[keyof DeleteApiAdminSubscriptionsByIdResponses];
+export type GetApiAdminSubscriptionsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Subscription ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/subscriptions/{id}';
+};
+export type GetApiAdminSubscriptionsByIdErrors = {
+    /**
+     * Subscription not found
+     */
+    404: unknown;
+};
+export type GetApiAdminSubscriptionsByIdResponses = {
+    /**
+     * Subscription found
+     */
+    200: SubscriptionResponse;
+};
+export type GetApiAdminSubscriptionsByIdResponse = GetApiAdminSubscriptionsByIdResponses[keyof GetApiAdminSubscriptionsByIdResponses];
+export type PutApiAdminSubscriptionsByIdData = {
+    body: UpdateSubscriptionRequest;
+    path: {
+        /**
+         * Subscription ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/subscriptions/{id}';
+};
+export type PutApiAdminSubscriptionsByIdErrors = {
+    /**
+     * Subscription not found
+     */
+    404: unknown;
+};
+export type PutApiAdminSubscriptionsByIdResponses = {
+    /**
+     * Subscription updated
+     */
+    204: void;
+};
+export type PutApiAdminSubscriptionsByIdResponse = PutApiAdminSubscriptionsByIdResponses[keyof PutApiAdminSubscriptionsByIdResponses];
+export type PostApiAdminSubscriptionsByIdPauseData = {
+    body?: never;
+    path: {
+        /**
+         * Subscription ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/subscriptions/{id}/pause';
+};
+export type PostApiAdminSubscriptionsByIdPauseErrors = {
+    /**
+     * Subscription not found
+     */
+    404: unknown;
+};
+export type PostApiAdminSubscriptionsByIdPauseResponses = {
+    /**
+     * Subscription paused
+     */
+    200: SubscriptionResponse;
+};
+export type PostApiAdminSubscriptionsByIdPauseResponse = PostApiAdminSubscriptionsByIdPauseResponses[keyof PostApiAdminSubscriptionsByIdPauseResponses];
+export type PostApiAdminSubscriptionsByIdResumeData = {
+    body?: never;
+    path: {
+        /**
+         * Subscription ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/subscriptions/{id}/resume';
+};
+export type PostApiAdminSubscriptionsByIdResumeErrors = {
+    /**
+     * Subscription not found
+     */
+    404: unknown;
+};
+export type PostApiAdminSubscriptionsByIdResumeResponses = {
+    /**
+     * Subscription resumed
+     */
+    200: SubscriptionResponse;
+};
+export type PostApiAdminSubscriptionsByIdResumeResponse = PostApiAdminSubscriptionsByIdResumeResponses[keyof PostApiAdminSubscriptionsByIdResumeResponses];
+export type GetAuthCheckDomainData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Email address to check
+         */
+        email: string;
+    };
+    url: '/auth/check-domain';
+};
+export type GetAuthCheckDomainResponses = {
+    /**
+     * Domain check result
+     */
+    200: DomainCheckResponse;
+};
+export type GetAuthCheckDomainResponse = GetAuthCheckDomainResponses[keyof GetAuthCheckDomainResponses];
+export type PostAuthLoginData = {
+    body: LoginRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/login';
+};
+export type PostAuthLoginErrors = {
+    /**
+     * Invalid credentials
+     */
+    401: unknown;
+};
+export type PostAuthLoginResponses = {
+    /**
+     * Login successful
+     */
+    200: LoginResponse;
+};
+export type PostAuthLoginResponse = PostAuthLoginResponses[keyof PostAuthLoginResponses];
+export type PostAuthLogoutData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/logout';
+};
+export type PostAuthLogoutResponses = {
+    /**
+     * Logout successful
+     */
+    204: void;
+};
+export type PostAuthLogoutResponse = PostAuthLogoutResponses[keyof PostAuthLogoutResponses];
+export type GetAuthMeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/me';
+};
+export type GetAuthMeErrors = {
+    /**
+     * Not authenticated
+     */
+    401: unknown;
+};
+export type GetAuthMeResponses = {
+    /**
+     * Current user info
+     */
+    200: CurrentUserResponse;
+};
+export type GetAuthMeResponse = GetAuthMeResponses[keyof GetAuthMeResponses];
+export type PostAuthRefreshData = {
+    body: RefreshTokenRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/refresh';
+};
+export type PostAuthRefreshErrors = {
+    /**
+     * Invalid refresh token
+     */
+    401: unknown;
+};
+export type PostAuthRefreshResponses = {
+    /**
+     * Token refreshed
+     */
+    200: TokenRefreshResponse;
+};
+export type PostAuthRefreshResponse = PostAuthRefreshResponses[keyof PostAuthRefreshResponses];
+export type PostWebauthnAuthenticateBeginData = {
+    body: AuthenticateBeginRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/webauthn/authenticate/begin';
+};
+export type PostWebauthnAuthenticateBeginResponses = {
+    /**
+     * Authentication challenge issued
+     */
+    200: AuthenticateBeginResponse;
+};
+export type PostWebauthnAuthenticateBeginResponse = PostWebauthnAuthenticateBeginResponses[keyof PostWebauthnAuthenticateBeginResponses];
+export type PostWebauthnAuthenticateCompleteData = {
+    body: AuthenticateCompleteRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/webauthn/authenticate/complete';
+};
+export type PostWebauthnAuthenticateCompleteErrors = {
+    /**
+     * Invalid credentials
+     */
+    401: unknown;
+};
+export type PostWebauthnAuthenticateCompleteResponses = {
+    /**
+     * Login successful, session cookie set
+     */
+    200: AuthenticateCompleteResponse;
+};
+export type PostWebauthnAuthenticateCompleteResponse = PostWebauthnAuthenticateCompleteResponses[keyof PostWebauthnAuthenticateCompleteResponses];
+export type GetWebauthnCredentialsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/webauthn/credentials';
+};
+export type GetWebauthnCredentialsErrors = {
+    /**
+     * Authentication required
+     */
+    401: unknown;
+};
+export type GetWebauthnCredentialsResponses = {
+    /**
+     * Caller's passkeys
+     */
+    200: Array<CredentialSummary>;
+};
+export type GetWebauthnCredentialsResponse = GetWebauthnCredentialsResponses[keyof GetWebauthnCredentialsResponses];
+export type DeleteWebauthnCredentialData = {
+    body?: never;
+    path: {
+        /**
+         * Credential id (pkc_…)
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/auth/webauthn/credentials/{id}';
+};
+export type DeleteWebauthnCredentialErrors = {
+    /**
+     * Authentication required
+     */
+    401: unknown;
+    /**
+     * Credential not found or not owned by caller
+     */
+    404: unknown;
+};
+export type DeleteWebauthnCredentialResponses = {
+    /**
+     * Passkey revoked
+     */
+    204: void;
+};
+export type DeleteWebauthnCredentialResponse = DeleteWebauthnCredentialResponses[keyof DeleteWebauthnCredentialResponses];
+export type PostWebauthnRegisterBeginData = {
+    body: RegisterBeginRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/webauthn/register/begin';
+};
+export type PostWebauthnRegisterBeginErrors = {
+    /**
+     * Domain is federated or email malformed
+     */
+    400: unknown;
+    /**
+     * Authentication required
+     */
+    401: unknown;
+};
+export type PostWebauthnRegisterBeginResponses = {
+    /**
+     * Registration challenge issued
+     */
+    200: RegisterBeginResponse;
+};
+export type PostWebauthnRegisterBeginResponse = PostWebauthnRegisterBeginResponses[keyof PostWebauthnRegisterBeginResponses];
+export type PostWebauthnRegisterCompleteData = {
+    body: RegisterCompleteRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/webauthn/register/complete';
+};
+export type PostWebauthnRegisterCompleteErrors = {
+    /**
+     * Ceremony state expired or attestation invalid
+     */
+    400: unknown;
+    /**
+     * Authentication required
+     */
+    401: unknown;
+    /**
+     * Ceremony belongs to a different principal
+     */
+    403: unknown;
+};
+export type PostWebauthnRegisterCompleteResponses = {
+    /**
+     * Passkey registered
+     */
+    200: RegisterCompleteResponse;
+};
+export type PostWebauthnRegisterCompleteResponse = PostWebauthnRegisterCompleteResponses[keyof PostWebauthnRegisterCompleteResponses];
+export type GetApiAdminDispatchJobs2Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Result size. Default 50, capped at 1000.
+         */
+        size?: number;
+        /**
+         * Filter by event ID
+         */
+        eventId?: string;
+        /**
+         * Filter by correlation ID
+         */
+        correlationId?: string;
+        /**
+         * Filter by subscription ID
+         */
+        subscriptionId?: string;
+        /**
+         * Filter by client IDs (comma-separated)
+         */
+        clientIds?: string;
+        /**
+         * Filter by statuses (comma-separated)
+         */
+        statuses?: string;
+        /**
+         * Filter by application codes (comma-separated)
+         */
+        applications?: string;
+        /**
+         * Filter by subdomains (comma-separated)
+         */
+        subdomains?: string;
+        /**
+         * Filter by aggregates (comma-separated)
+         */
+        aggregates?: string;
+        /**
+         * Filter by codes (comma-separated)
+         */
+        codes?: string;
+        /**
+         * Free-text search across code, subject, source
+         */
+        source?: string;
+    };
+    url: '/bff/dispatch-jobs';
+};
+export type GetApiAdminDispatchJobs2Responses = {
+    /**
+     * List of dispatch jobs
+     */
+    200: Array<DispatchJobReadResponse>;
+};
+export type GetApiAdminDispatchJobs2Response = GetApiAdminDispatchJobs2Responses[keyof GetApiAdminDispatchJobs2Responses];
+export type PostApiAdminDispatchJobs2Data = {
+    body: CreateDispatchJobRequest;
+    path?: never;
+    query?: never;
+    url: '/bff/dispatch-jobs';
+};
+export type PostApiAdminDispatchJobs2Errors = {
+    /**
+     * Invalid request
+     */
+    400: unknown;
+    /**
+     * No access to client
+     */
+    403: unknown;
+};
+export type PostApiAdminDispatchJobs2Responses = {
+    /**
+     * Dispatch job created
+     */
+    201: CreatedResponse;
+};
+export type PostApiAdminDispatchJobs2Response = PostApiAdminDispatchJobs2Responses[keyof PostApiAdminDispatchJobs2Responses];
+export type PostApiAdminDispatchJobsBatchData = {
+    body: BatchCreateDispatchJobsRequest;
+    path?: never;
+    query?: never;
+    url: '/bff/dispatch-jobs/batch';
+};
+export type PostApiAdminDispatchJobsBatchErrors = {
+    /**
+     * Invalid request or batch size exceeds limit
+     */
+    400: unknown;
+};
+export type PostApiAdminDispatchJobsBatchResponses = {
+    /**
+     * Dispatch jobs created
+     */
+    201: BatchCreateDispatchJobsResponse;
+};
+export type PostApiAdminDispatchJobsBatchResponse = PostApiAdminDispatchJobsBatchResponses[keyof PostApiAdminDispatchJobsBatchResponses];
+export type GetApiAdminDispatchJobsByEventByEventId2Data = {
+    body?: never;
+    path: {
+        /**
+         * Event ID
+         */
+        event_id: string;
+    };
+    query?: never;
+    url: '/bff/dispatch-jobs/by-event/{event_id}';
+};
+export type GetApiAdminDispatchJobsByEventByEventId2Responses = {
+    /**
+     * Dispatch jobs for event
+     */
+    200: Array<DispatchJobResponse>;
+};
+export type GetApiAdminDispatchJobsByEventByEventId2Response = GetApiAdminDispatchJobsByEventByEventId2Responses[keyof GetApiAdminDispatchJobsByEventByEventId2Responses];
+export type GetApiAdminDispatchJobsFilterOptions2Data = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/dispatch-jobs/filter-options';
+};
+export type GetApiAdminDispatchJobsFilterOptions2Responses = {
+    /**
+     * Filter options
+     */
+    200: DispatchJobFilterOptionsResponse;
+};
+export type GetApiAdminDispatchJobsFilterOptions2Response = GetApiAdminDispatchJobsFilterOptions2Responses[keyof GetApiAdminDispatchJobsFilterOptions2Responses];
+export type GetApiAdminDispatchJobsRaw2Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Result size. Default 50, capped at 1000.
+         */
+        size?: number;
+    };
+    url: '/bff/dispatch-jobs/raw';
+};
+export type GetApiAdminDispatchJobsRaw2Responses = {
+    /**
+     * Raw dispatch jobs
+     */
+    200: Array<DispatchJobResponse>;
+};
+export type GetApiAdminDispatchJobsRaw2Response = GetApiAdminDispatchJobsRaw2Responses[keyof GetApiAdminDispatchJobsRaw2Responses];
+export type GetApiAdminDispatchJobsById2Data = {
+    body?: never;
+    path: {
+        /**
+         * Dispatch job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/bff/dispatch-jobs/{id}';
+};
+export type GetApiAdminDispatchJobsById2Errors = {
+    /**
+     * Dispatch job not found
+     */
+    404: unknown;
+};
+export type GetApiAdminDispatchJobsById2Responses = {
+    /**
+     * Dispatch job found
+     */
+    200: DispatchJobResponse;
+};
+export type GetApiAdminDispatchJobsById2Response = GetApiAdminDispatchJobsById2Responses[keyof GetApiAdminDispatchJobsById2Responses];
+export type GetApiAdminDispatchJobsByIdAttempts2Data = {
+    body?: never;
+    path: {
+        /**
+         * Dispatch job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/bff/dispatch-jobs/{id}/attempts';
+};
+export type GetApiAdminDispatchJobsByIdAttempts2Errors = {
+    /**
+     * Dispatch job not found
+     */
+    404: unknown;
+};
+export type GetApiAdminDispatchJobsByIdAttempts2Responses = {
+    /**
+     * Attempts list returned
+     */
+    200: Array<DispatchAttemptResponse>;
+};
+export type GetApiAdminDispatchJobsByIdAttempts2Response = GetApiAdminDispatchJobsByIdAttempts2Responses[keyof GetApiAdminDispatchJobsByIdAttempts2Responses];
+export type GetApiAdminDispatchJobsByIdRaw2Data = {
+    body?: never;
+    path: {
+        /**
+         * Dispatch job ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/bff/dispatch-jobs/{id}/raw';
+};
+export type GetApiAdminDispatchJobsByIdRaw2Errors = {
+    /**
+     * Dispatch job not found
+     */
+    404: unknown;
+};
+export type GetApiAdminDispatchJobsByIdRaw2Responses = {
+    /**
+     * Raw dispatch job data
+     */
+    200: unknown;
+};
+export type GetApiAdminEvents2Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Result size. Default 50, capped at 1000.
+         */
+        size?: number;
+        /**
+         * Filter by client IDs (comma-separated)
+         */
+        clientIds?: string;
+        /**
+         * Filter by event types (comma-separated)
+         */
+        types?: string;
+        /**
+         * Filter by application codes (comma-separated)
+         */
+        applications?: string;
+        /**
+         * Filter by subdomains (comma-separated)
+         */
+        subdomains?: string;
+        /**
+         * Filter by aggregates (comma-separated)
+         */
+        aggregates?: string;
+        /**
+         * Filter by correlation ID
+         */
+        correlationId?: string;
+        /**
+         * Free-text search across type, source, subject
+         */
+        source?: string;
+    };
+    url: '/bff/events';
+};
+export type GetApiAdminEvents2Responses = {
+    /**
+     * List of events
+     */
+    200: Array<EventRead>;
+};
+export type GetApiAdminEvents2Response = GetApiAdminEvents2Responses[keyof GetApiAdminEvents2Responses];
+export type PostApiAdminEvents2Data = {
+    body: CreateEventRequest;
+    path?: never;
+    query?: never;
+    url: '/bff/events';
+};
+export type PostApiAdminEvents2Errors = {
+    /**
+     * Validation error
+     */
+    400: unknown;
+    /**
+     * No access to client
+     */
+    403: unknown;
+};
+export type PostApiAdminEvents2Responses = {
+    /**
+     * Event already exists (idempotent)
+     */
+    200: CreateEventResponse;
+    /**
+     * Event created
+     */
+    201: CreateEventResponse;
+};
+export type PostApiAdminEvents2Response = PostApiAdminEvents2Responses[keyof PostApiAdminEvents2Responses];
+export type PostApiAdminEventsBatchData = {
+    body: BatchCreateEventsRequest;
+    path?: never;
+    query?: never;
+    url: '/bff/events/batch';
+};
+export type PostApiAdminEventsBatchErrors = {
+    /**
+     * Invalid request or batch size exceeds limit
+     */
+    400: unknown;
+};
+export type PostApiAdminEventsBatchResponses = {
+    /**
+     * Events created
+     */
+    201: BatchCreateResponse;
+};
+export type PostApiAdminEventsBatchResponse = PostApiAdminEventsBatchResponses[keyof PostApiAdminEventsBatchResponses];
+export type GetApiAdminEventsFilterOptions2Data = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/events/filter-options';
+};
+export type GetApiAdminEventsFilterOptions2Responses = {
+    200: EventFilterOptions;
+};
+export type GetApiAdminEventsFilterOptions2Response = GetApiAdminEventsFilterOptions2Responses[keyof GetApiAdminEventsFilterOptions2Responses];
+export type GetApiAdminEventsRaw2Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Result size. Default 50, capped at 1000.
+         */
+        size?: number;
+    };
+    url: '/bff/events/raw';
+};
+export type GetApiAdminEventsRaw2Responses = {
+    /**
+     * Raw events
+     */
+    200: Array<EventSummaryResponse>;
+};
+export type GetApiAdminEventsRaw2Response = GetApiAdminEventsRaw2Responses[keyof GetApiAdminEventsRaw2Responses];
+export type GetApiAdminEventsById2Data = {
+    body?: never;
+    path: {
+        /**
+         * Event ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/bff/events/{id}';
+};
+export type GetApiAdminEventsById2Errors = {
+    /**
+     * Event not found
+     */
+    404: unknown;
+};
+export type GetApiAdminEventsById2Responses = {
+    /**
+     * Event found
+     */
+    200: EventResponse;
+};
+export type GetApiAdminEventsById2Response = GetApiAdminEventsById2Responses[keyof GetApiAdminEventsById2Responses];
+export type GetApiAdminFilterOptionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/filter-options';
+};
+export type GetApiAdminFilterOptionsResponses = {
+    /**
+     * All filter options
+     */
+    200: AllFilterOptions;
+};
+export type GetApiAdminFilterOptionsResponse = GetApiAdminFilterOptionsResponses[keyof GetApiAdminFilterOptionsResponses];
+export type GetApiAdminFilterOptionsClientsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/filter-options/clients';
+};
+export type GetApiAdminFilterOptionsClientsResponses = {
+    /**
+     * Client filter options
+     */
+    200: ClientFilterOptions;
+};
+export type GetApiAdminFilterOptionsClientsResponse = GetApiAdminFilterOptionsClientsResponses[keyof GetApiAdminFilterOptionsClientsResponses];
+export type GetApiAdminFilterOptionsDispatchJobsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/filter-options/dispatch-jobs';
+};
+export type GetApiAdminFilterOptionsDispatchJobsResponses = {
+    /**
+     * Dispatch jobs filter options
+     */
+    200: DispatchJobsFilterOptions;
+};
+export type GetApiAdminFilterOptionsDispatchJobsResponse = GetApiAdminFilterOptionsDispatchJobsResponses[keyof GetApiAdminFilterOptionsDispatchJobsResponses];
+export type GetApiAdminFilterOptionsDispatchPoolsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/filter-options/dispatch-pools';
+};
+export type GetApiAdminFilterOptionsDispatchPoolsResponses = {
+    /**
+     * Dispatch pool filter options
+     */
+    200: DispatchPoolFilterOptions;
+};
+export type GetApiAdminFilterOptionsDispatchPoolsResponse = GetApiAdminFilterOptionsDispatchPoolsResponses[keyof GetApiAdminFilterOptionsDispatchPoolsResponses];
+export type GetApiAdminFilterOptionsEventTypesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/filter-options/event-types';
+};
+export type GetApiAdminFilterOptionsEventTypesResponses = {
+    /**
+     * Event type filter options
+     */
+    200: EventTypeFilterOptions;
+};
+export type GetApiAdminFilterOptionsEventTypesResponse = GetApiAdminFilterOptionsEventTypesResponses[keyof GetApiAdminFilterOptionsEventTypesResponses];
+export type GetApiAdminFilterOptionsEventTypesFiltersAggregatesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Filter by application(s)
+         */
+        'application[]'?: Array<string>;
+        /**
+         * Filter by subdomain(s)
+         */
+        'subdomain[]'?: Array<string>;
+    };
+    url: '/bff/filter-options/event-types/filters/aggregates';
+};
+export type GetApiAdminFilterOptionsEventTypesFiltersAggregatesResponses = {
+    /**
+     * Aggregate filter options
+     */
+    200: AggregatesResponse;
+};
+export type GetApiAdminFilterOptionsEventTypesFiltersAggregatesResponse = GetApiAdminFilterOptionsEventTypesFiltersAggregatesResponses[keyof GetApiAdminFilterOptionsEventTypesFiltersAggregatesResponses];
+export type GetApiAdminFilterOptionsEventTypesFiltersApplicationsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/filter-options/event-types/filters/applications';
+};
+export type GetApiAdminFilterOptionsEventTypesFiltersApplicationsResponses = {
+    /**
+     * Application filter options
+     */
+    200: ApplicationsResponse;
+};
+export type GetApiAdminFilterOptionsEventTypesFiltersApplicationsResponse = GetApiAdminFilterOptionsEventTypesFiltersApplicationsResponses[keyof GetApiAdminFilterOptionsEventTypesFiltersApplicationsResponses];
+export type GetApiAdminFilterOptionsEventTypesFiltersSubdomainsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Filter by application(s)
+         */
+        'application[]'?: Array<string>;
+        /**
+         * Filter by subdomain(s)
+         */
+        'subdomain[]'?: Array<string>;
+    };
+    url: '/bff/filter-options/event-types/filters/subdomains';
+};
+export type GetApiAdminFilterOptionsEventTypesFiltersSubdomainsResponses = {
+    /**
+     * Subdomain filter options
+     */
+    200: SubdomainsResponse;
+};
+export type GetApiAdminFilterOptionsEventTypesFiltersSubdomainsResponse = GetApiAdminFilterOptionsEventTypesFiltersSubdomainsResponses[keyof GetApiAdminFilterOptionsEventTypesFiltersSubdomainsResponses];
+export type GetApiAdminEventsFilterOptions3Data = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/filter-options/events';
+};
+export type GetApiAdminEventsFilterOptions3Responses = {
+    /**
+     * Events filter options
+     */
+    200: EventsFilterOptions;
+};
+export type GetApiAdminEventsFilterOptions3Response = GetApiAdminEventsFilterOptions3Responses[keyof GetApiAdminEventsFilterOptions3Responses];
+export type GetApiAdminFilterOptionsSubscriptionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bff/filter-options/subscriptions';
+};
+export type GetApiAdminFilterOptionsSubscriptionsResponses = {
+    /**
+     * Subscription filter options
+     */
+    200: SubscriptionFilterOptions;
+};
+export type GetApiAdminFilterOptionsSubscriptionsResponse = GetApiAdminFilterOptionsSubscriptionsResponses[keyof GetApiAdminFilterOptionsSubscriptionsResponses];
+//# sourceMappingURL=types.gen.d.ts.map
